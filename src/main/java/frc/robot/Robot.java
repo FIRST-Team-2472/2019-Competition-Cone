@@ -7,9 +7,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.Joystick.AxisType;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.subsystems.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,10 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private Joystick leftStick;
+  private Joystick rightStick;
+  private XboxController driverController;
+  private XboxController manipulatorController;
+  public static Drive d;
+
+  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,9 +37,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    leftStick = new Joystick(Constants.JOYSTICK_LEFT);
+    rightStick = new Joystick(Constants.JOYSTICK_RIGHT);
+    driverController = new XboxController(Constants.DRIVE_CONTROLLER);
+    manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
+    d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
+
   }
 
   /**
@@ -60,9 +70,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /**
@@ -70,15 +77,38 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+    d.tankDrive(getJoystickControl(leftStick, rightStick));
+  }
+
+  private double[] getJoystickControl(Joystick leftStick, Joystick rightStick) {
+    return new double[]{leftStick.getY(), rightStick.getY()};
+  }
+
+  private double[] getXboxControl(XboxController driverController) {
+    double rightSide;
+    double leftSide;
+    double baseSpeed;
+    double turn = driverController.getX();
+    boolean spin = driverController.getXButton();
+    double speed = driverController.getTriggerAxis(Hand.kLeft);
+    double slowdown = driverController.getTriggerAxis(Hand.kRight);
+    boolean turningLeft = turn < 0;
+    if(spin){
+				rightSide = turn;
+				leftSide = -turn;
+		} else {
+
+			baseSpeed = speed - slowdown;
+
+			if(turningLeft) {
+        leftSide = baseSpeed * (1 - Math.abs(turn));
+        rightSide = baseSpeed;
+			} else {
+				rightSide = baseSpeed * (1 - Math.abs(turn));
+				leftSide=baseSpeed;
+			}
+		}
+    return new double[]{leftSide, rightSide};
   }
 
   /**
@@ -86,6 +116,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
   }
 
   /**
