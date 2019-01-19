@@ -25,6 +25,8 @@ public class Drive {
         backLeft = new TalonSRX(backLeftID);
         frontRight = new TalonSRX(frontRightID);
         backRight = new TalonSRX(frontRightID);
+        frontRight.setInverted(true);
+        backRight.setInverted(true);
     }
 
 
@@ -36,6 +38,9 @@ public class Drive {
     }
 
     public void tankDrive(double[] leftRightArray) {
+        if (leftRightArray.length != 2) {
+            throw new IllegalArgumentException("Pass a 2 length array to set tankDrive speed");
+        }
         tankDrive(leftRightArray[0], leftRightArray[1]);
     }
 

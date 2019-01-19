@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,7 +28,12 @@ public class Robot extends TimedRobot {
   private Joystick rightStick;
   private XboxController driverController;
   private XboxController manipulatorController;
+  private Joystick box;
+
+  private boolean driveInverted;
+  
   public static Drive d;
+
 
   
 
@@ -42,7 +48,7 @@ public class Robot extends TimedRobot {
     driverController = new XboxController(Constants.DRIVE_CONTROLLER);
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
-
+    box = new Joystick(Constants.BOX_ID);
   }
 
   /**
@@ -77,7 +83,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    d.tankDrive(getJoystickControl(leftStick, rightStick));
   }
 
   private double[] getJoystickControl(Joystick leftStick, Joystick rightStick) {
@@ -87,20 +92,20 @@ public class Robot extends TimedRobot {
   private double[] getXboxControl(XboxController driverController) {
     double rightSide;
     double leftSide;
-    double baseSpeed;
-    double turn = driverController.getX();
+    double turn = driverController.getX(Hand.kLeft);
     boolean spin = driverController.getXButton();
     double speed = driverController.getTriggerAxis(Hand.kLeft);
     double slowdown = driverController.getTriggerAxis(Hand.kRight);
-    boolean turningLeft = turn < 0;
+    boolean turningRight = turn > 0;
+
     if(spin){
 				rightSide = turn;
 				leftSide = -turn;
 		} else {
 
-			baseSpeed = speed - slowdown;
+			double baseSpeed = speed - slowdown;
 
-			if(turningLeft) {
+			if(turningRight) {
         leftSide = baseSpeed * (1 - Math.abs(turn));
         rightSide = baseSpeed;
 			} else {
@@ -116,7 +121,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-
+    driveInverted = box.getRawButton(Constants.BOX_INVERSE_BUTTON);
+    double[] leftRight = getXboxControl(driverController);
+    d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
   }
 
   /**
