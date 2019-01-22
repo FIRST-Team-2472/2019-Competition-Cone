@@ -26,8 +26,8 @@ public class Switchbox extends GenericHID {
 
     public Switchbox(int port) {
         super(port);
-        this.switchesHeight = 2;
-        this.switchesWidth = 4;
+        this.switchesHeight = Constants.BOX_SWITCHES_HEIGHT;
+        this.switchesWidth = Constants.BOX_SWITCHES_WIDTH;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Switchbox extends GenericHID {
         if (collumn < 0 || collumn >= switchesWidth) {
             throw new IndexOutOfBoundsException("Collumn is not on this switchbox");
         }
-        int switchStart = 5;
+        int switchStart = 4;
         int rowOffset = 4 * row;
         int collumOffset = collumn;
 

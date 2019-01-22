@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveInverted = box.getSwitch(0, 0);
+    driveInverted = box.getSwitch(Constants.BOX_INVERSE_BUTTON_ROW, Constants.BOX_INVERSE_BUTTON_COLLUMN);
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
   }
