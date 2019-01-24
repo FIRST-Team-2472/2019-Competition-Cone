@@ -22,7 +22,11 @@ public class Constants {
     public static final int JOYSTICK_RIGHT = 3;
     public static final int BOX_ID = 1;
 
+    public static final int BOX_SWITCHES_HEIGHT = 2;
+    public static final int BOX_SWITCHES_WIDTH = 4;
     public static final int BOX_INVERSE_BUTTON = 5;
+    public static final int BOX_INVERSE_BUTTON_ROW = 0;
+    public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
     public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
     public static final int ARM_RAISER_REVERSE_CHANNEL = 1;

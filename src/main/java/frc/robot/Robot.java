@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   private Joystick rightStick;
   private XboxController driverController;
   private XboxController manipulatorController;
-  private Joystick box;
+  private Switchbox box;
 
   private boolean driveInverted;
   
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     driverController = new XboxController(Constants.DRIVE_CONTROLLER);
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
-    box = new Joystick(Constants.BOX_ID);
+    box = new Switchbox(Constants.BOX_ID);
   }
 
   /**
@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveInverted = box.getRawButton(Constants.BOX_INVERSE_BUTTON);
+    driveInverted = box.getSwitch(Constants.BOX_INVERSE_BUTTON_ROW, Constants.BOX_INVERSE_BUTTON_COLLUMN);
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
   }
