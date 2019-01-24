@@ -23,4 +23,7 @@ public class Constants {
     public static final int BOX_ID = 1;
 
     public static final int BOX_INVERSE_BUTTON = 5;
+
+    public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
+    public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
 }
