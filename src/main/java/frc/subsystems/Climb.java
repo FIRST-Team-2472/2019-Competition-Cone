@@ -7,6 +7,7 @@
 
 package frc.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
 
@@ -25,17 +26,23 @@ public class Climb {
 
     public Climb(int leftCreepID, int rightCreepID, int frontSolonoidForward, int frontSolonoidReverse,
             int rearSolenoidForward, int rearSolenoidReverse) {
+        init(leftCreepID, rightCreepID, frontSolonoidForward, frontSolonoidReverse,
+            rearSolenoidForward, rearSolenoidReverse);
+    }
+
+    public void init(int leftCreepID, int rightCreepID, int frontSolonoidForward, int frontSolonoidReverse,
+            int rearSolenoidForward, int rearSolenoidReverse) {
         leftCreep = new TalonSRX(leftCreepID);
         rightCreep = new TalonSRX(rightCreepID);
         rearSolenoid = new DoubleSolenoid(frontSolonoidForward, frontSolonoidReverse);
         frontSolenoid = new DoubleSolenoid(rearSolenoidForward, rearSolenoidReverse);
     }
-/*
+
     public Climb() {
-        Climb(Constants.CREEP_LEFT_MOTOR_ID, Constants.CREEP_RIGHT_MOTOR_ID, Constants.CLIMB_FRONT_FW_CHANNEL,
+        init(Constants.CREEP_LEFT_MOTOR_ID, Constants.CREEP_RIGHT_MOTOR_ID, Constants.CLIMB_FRONT_FW_CHANNEL,
                 Constants.CLIMB_FRONT_RV_CHANNEL, Constants.CLIMB_REAR_FW_CHANNEL, Constants.CLIMB_REAR_RV_CHANNEL);
     }
-*/
+
     public void raiseFront() {
         frontSolenoid.set(Value.kForward);
     }
@@ -50,5 +57,18 @@ public class Climb {
 
     public void retractRear() {
         rearSolenoid.set(Value.kReverse);
+    }
+
+    public void creepForward() {
+        leftCreep.set(ControlMode.PercentOutput, .2);
+        rightCreep.set(ControlMode.PercentOutput, .2);
+    }
+
+    public void setLeft(double power) {
+        leftCreep.set(ControlMode.PercentOutput, power);
+    }
+    
+    public void setRight(double power) {
+        leftCreep.set(ControlMode.PercentOutput, power);
     }
 }
