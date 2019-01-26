@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.subsystems.ArmGrippers;
 import frc.subsystems.Drive;
 
 /**
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
   private XboxController driverController;
   private XboxController manipulatorController;
   private Switchbox box;
+  private ArmGrippers arm; 
 
   private boolean driveInverted;
   
@@ -49,6 +51,7 @@ public class Robot extends TimedRobot {
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
+    arm = new ArmGrippers(4, 5);
   }
 
   /**
