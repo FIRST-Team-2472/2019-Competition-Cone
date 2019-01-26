@@ -28,6 +28,8 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON_ROW = 0;
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
+    public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
+    public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
     public static final int LIGHTRING_RELAY_ID = 0;
 
     public static final int CREEP_LEFT_MOTOR_ID = 4;
@@ -36,4 +38,8 @@ public class Constants {
     public static final int CLIMB_REAR_RV_CHANNEL = 5;
     public static final int CLIMB_FRONT_FW_CHANNEL = 6;
     public static final int CLIMB_FRONT_RV_CHANNEL = 7;
+    public static final int DOUBLE_SOLENIOD_FW_CHANNEL_1 = 0;
+    public static final int DOUBLE_SOLENIOD_FW_CHANNEL_2 = 2;
+    public static final int DOUBLE_SOLENIOD_RV_CHANNEL_1 = 1;
+    public static final int DOUBLE_SOLENIOD_RV_CHANNEL_2 = 3;
 }
