@@ -29,4 +29,11 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
     public static final int LIGHTRING_RELAY_ID = 0;
+
+    public static final int CREEP_LEFT_MOTOR_ID = 4;
+    public static final int CREEP_RIGHT_MOTOR_ID = 5;
+    public static final int CLIMB_REAR_FW_CHANNEL = 4;
+    public static final int CLIMB_REAR_RV_CHANNEL = 5;
+    public static final int CLIMB_FRONT_FW_CHANNEL = 6;
+    public static final int CLIMB_FRONT_RV_CHANNEL = 7;
 }
