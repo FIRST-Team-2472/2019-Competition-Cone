@@ -17,9 +17,14 @@ public class HatchGrab {
     DoubleSolenoid doubleSolenoid1;
     DoubleSolenoid doubleSolenoid2;
     public HatchGrab() {
-        doubleSolenoid1 = new DoubleSolenoid(Constants.DOUBLE_SOLENIOD_FW_CHANNEL_1, Constants.DOUBLE_SOLENIOD_RV_CHANNEL_1);
-        doubleSolenoid2 = new DoubleSolenoid(Constants.DOUBLE_SOLENIOD_FW_CHANNEL_2, Constants.DOUBLE_SOLENIOD_RV_CHANNEL_2);
+        HatchGraber(Constants.DOUBLE_SOLENIOD_FW_CHANNEL_1,Constants.DOUBLE_SOLENIOD_RV_CHANNEL_1,Constants.DOUBLE_SOLENIOD_FW_CHANNEL_2,Constants.DOUBLE_SOLENIOD_RV_CHANNEL_2);
     }
+
+    public void HatchGraber(int FWC1, int RVC1 ,int FWC2,int RVC2) {
+        doubleSolenoid1 = new DoubleSolenoid(FWC1, RVC1);
+        doubleSolenoid2 = new DoubleSolenoid(FWC2, RVC2);
+    }
+
     public void out() {
         doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
         doubleSolenoid2.set(DoubleSolenoid.Value.kForward);
