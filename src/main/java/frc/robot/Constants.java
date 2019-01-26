@@ -28,5 +28,7 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON_ROW = 0;
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
+    public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
+    public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
     public static final int LIGHTRING_RELAY_ID = 0;
 }
