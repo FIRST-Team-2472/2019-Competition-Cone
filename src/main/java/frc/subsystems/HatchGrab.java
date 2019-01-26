@@ -34,4 +34,20 @@ public class HatchGrab {
         doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
         doubleSolenoid2.set(DoubleSolenoid.Value.kReverse);
     }
+
+    public void dS1Out() {
+        doubleSolenoid1.set(DoubleSolenoid.Value.kReverse); 
+    }
+
+    public void dS2Out() {
+        doubleSolenoid2.set(DoubleSolenoid.Value.kReverse); 
+    }
+
+    public void dS1In() {
+        doubleSolenoid1.set(DoubleSolenoid.Value.kForward); 
+    }
+
+    public void dS2In() {
+        doubleSolenoid2.set(DoubleSolenoid.Value.kForward); 
+    }
 }
