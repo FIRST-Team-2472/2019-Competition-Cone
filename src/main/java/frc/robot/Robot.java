@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
   private XboxController driverController;
   private XboxController manipulatorController;
   private Switchbox box;
-  private ArmGrippers arm; 
+  private ArmGrippers armGrippers; 
 
   private boolean driveInverted;
   
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
-    arm = new ArmGrippers(4, 5);
+    armGrippers = new ArmGrippers(Constants.LEFT_GRIPPER_MOTOR_ID, Constants.RIGHT_GRIPPER_MOTOR_ID);
   }
 
   /**

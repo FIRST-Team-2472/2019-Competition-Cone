@@ -15,6 +15,8 @@ public class Constants {
     public static final int FRONT_LEFT_MOTOR_ID = 2;
     public static final int BACK_RIGHT_MOTOR_ID = 1;
     public static final int FRONT_RIGHT_MOTOR_ID = 3;
+    public static final int RIGHT_GRIPPER_MOTOR_ID = 4;
+    public static final int LEFT_GRIPPER_MOTOR_ID = 5;
 
     public static final int DRIVE_CONTROLLER = 0;
     public static final int MANIPULATOR_CONTROLLER = 1;
@@ -27,4 +29,5 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON = 5;
     public static final int BOX_INVERSE_BUTTON_ROW = 0;
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
+
 }
