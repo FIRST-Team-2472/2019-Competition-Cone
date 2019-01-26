@@ -31,4 +31,8 @@ public class Constants {
     public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
     public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
     public static final int LIGHTRING_RELAY_ID = 0;
+    public static final int DOUBLE_SOLENIOD_FW_CHANNEL_1 = 0;
+    public static final int DOUBLE_SOLENIOD_FW_CHANNEL_2 = 2;
+    public static final int DOUBLE_SOLENIOD_RV_CHANNEL_1 = 1;
+    public static final int DOUBLE_SOLENIOD_RV_CHANNEL_2 = 3;
 }
