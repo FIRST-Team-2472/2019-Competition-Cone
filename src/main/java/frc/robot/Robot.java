@@ -9,10 +9,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick.AxisType;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.subsystems.ArmGrippers;
 import frc.subsystems.Drive;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
   private Switchbox box;
   private ArmGrippers armGrippers; 
 
+  private Relay lightring;
   private boolean driveInverted;
   
   public static Drive d;
@@ -52,6 +55,7 @@ public class Robot extends TimedRobot {
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
     armGrippers = new ArmGrippers(Constants.LEFT_GRIPPER_MOTOR_ID, Constants.RIGHT_GRIPPER_MOTOR_ID);
+    lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
   }
 
   /**
@@ -79,6 +83,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    lightring.set(Value.kOn);
   }
 
   /**
@@ -119,6 +124,10 @@ public class Robot extends TimedRobot {
     return new double[]{leftSide, rightSide};
   }
 
+  @Override
+  public void teleopInit() {
+    lightring.set(Value.kOn);
+  }
   /**
    * This function is called periodically during operator control.
    */
@@ -134,5 +143,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  @Override
+  public void disabledInit() {
+    lightring.set(Value.kOff);
   }
 }
