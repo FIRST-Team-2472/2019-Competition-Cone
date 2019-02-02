@@ -7,6 +7,9 @@
 
 package frc.actions;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * Add your docs here.
  */
@@ -52,6 +55,8 @@ public class JoinActions implements Actionable{
             }
         }
         return finished;
+        // I <3 functional programming
+        //return Arrays.stream(actions).map(action -> action.isFinished()).allMatch(resultBool -> resultBool);
     }
 }
 
