@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -37,6 +38,8 @@ public class Robot extends TimedRobot {
   
   public static Drive d;
   public static Climb climb;
+  public static AnalogInput distanceFront;
+  public static AnalogInput distanceRear;
 
   public ArmRaise armRaise;
   public ArmWheels armWheels;
@@ -57,6 +60,8 @@ public class Robot extends TimedRobot {
     box = new Switchbox(Constants.BOX_ID);
     lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
     climb = new Climb();
+    distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
+    distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
   }
 
   /**

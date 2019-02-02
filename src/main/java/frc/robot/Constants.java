@@ -51,4 +51,7 @@ public class Constants {
     public static final int ARM_LOWER_BUTTON = 3;
     public static final int ARM_GRAB_BUTTON = 4;
     public static final int ARM_RELEASE_BUTTON = 5;
+
+    public static final int DISTANCE_SENSOR_REAR_PORT = 0;
+    public static final int DISTANCE_SENSOR_FRONT_PORT = 1;
 }
