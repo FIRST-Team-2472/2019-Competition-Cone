@@ -8,37 +8,27 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Constants;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class ArmWheels extends Command {
+public class ArmWheels {
+  TalonSRX r,l;
   public ArmWheels() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    r = new TalonSRX(Constants.ARM_WHEELS_RIGHT);
+    l = new TalonSRX(Constants.ARM_WHEELS_LEFT);
   }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
+  public void forward() {
+    r.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,-1);
   }
-
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
+  public void back() {
+    r.set(ControlMode.PercentOutput,-1);
+    l.set(ControlMode.PercentOutput,1);
   }
-
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  protected boolean isFinished() {
-    return false;
-  }
-
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
-
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
+  public void stop() {
+    r.set(ControlMode.PercentOutput,0);
+    l.set(ControlMode.PercentOutput,0);
   }
 }

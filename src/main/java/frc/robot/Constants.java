@@ -31,6 +31,8 @@ public class Constants {
     public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
     public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
     public static final int LIGHTRING_RELAY_ID = 0;
+    public static final int ARM_WHEELS_RIGHT = 4;
+    public static final int ARM_WHEELS_LEFT = 5;
 
     public static final int CREEP_LEFT_MOTOR_ID = 4;
     public static final int CREEP_RIGHT_MOTOR_ID = 5;
@@ -42,4 +44,11 @@ public class Constants {
     public static final int DOUBLE_SOLENIOD_FW_CHANNEL_2 = 2;
     public static final int DOUBLE_SOLENIOD_RV_CHANNEL_1 = 1;
     public static final int DOUBLE_SOLENIOD_RV_CHANNEL_2 = 3;
+
+    public static final int HATCH_GRAB_BUTTON = 0;
+    public static final int HATCH_RELEASE_BUTTON = 1;
+    public static final int ARM_RAISE_BUTTON = 2;
+    public static final int ARM_LOWER_BUTTON = 3;
+    public static final int ARM_GRAB_BUTTON = 4;
+    public static final int ARM_RELEASE_BUTTON = 5;
 }
