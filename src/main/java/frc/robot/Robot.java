@@ -7,16 +7,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.Relay.Value;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.subsystems.Drive;
+import frc.subsystems.ArmRaise;
+import frc.subsystems.ArmWheels;
+import frc.subsystems.HatchGrab;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -144,13 +144,13 @@ public class Robot extends TimedRobot {
     if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
       armRaise.out();
     }
-    if(manipulatorController.getRawButton(Contstants.ARM_LOWER_BUTTON)){ //Y
+    if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
       armRaise.out();
     }
     if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
       armWheels.forward();
     }
-    if(manipulatorController.getRawButton(Contstants.ARM_RELEASE_BUTTON)){ //LTrig
+    if(manipulatorController.getRawButton(Constants.ARM_RELEASE_BUTTON)){ //LTrig
       armWheels.back();
     }
   }

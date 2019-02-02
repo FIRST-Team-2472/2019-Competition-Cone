@@ -7,7 +7,6 @@
 
 package frc.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
