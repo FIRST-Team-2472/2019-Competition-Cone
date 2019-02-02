@@ -36,7 +36,9 @@ public class Robot extends TimedRobot {
   
   public static Drive d;
 
-
+  public ArmRaise armRaise;
+  public ArmWheels armWheels;
+  public HatchGrab hatchGrabber;
   
 
   /**
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
   }
 
   /**
@@ -132,6 +135,24 @@ public class Robot extends TimedRobot {
     driveInverted = box.getSwitch(Constants.BOX_INVERSE_BUTTON_ROW, Constants.BOX_INVERSE_BUTTON_COLLUMN);
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
+    if(manipulatorController.getRawButton(Constants.HATCH_GRAB_BUTTON)){ //A
+      hatchGrabber.out();
+    }
+    if(manipulatorController.getRawButton(Constants.HATCH_RELEASE_BUTTON)){ //B
+      hatchGrabber.in();
+    }
+    if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
+      armRaise.out();
+    }
+    if(manipulatorController.getRawButton(Contstants.ARM_LOWER_BUTTON)){ //Y
+      armRaise.out();
+    }
+    if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
+      armWheels.forward();
+    }
+    if(manipulatorController.getRawButton(Contstants.ARM_RELEASE_BUTTON)){ //LTrig
+      armWheels.back();
+    }
   }
 
   /**
