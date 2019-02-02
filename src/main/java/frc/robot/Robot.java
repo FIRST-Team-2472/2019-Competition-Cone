@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import frc.subsystems.Drive;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
+import frc.subsystems.Climb;
 import frc.subsystems.HatchGrab;
 
 /**
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   private boolean driveInverted;
   
   public static Drive d;
+  public static Climb climb;
 
   public ArmRaise armRaise;
   public ArmWheels armWheels;
@@ -54,6 +56,7 @@ public class Robot extends TimedRobot {
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
     lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
+    climb = new Climb();
   }
 
   /**
