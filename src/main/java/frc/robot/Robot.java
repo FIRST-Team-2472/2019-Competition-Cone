@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Relay.Value;
 import frc.subsystems.Drive;
+import frc.actions.ActionQueue;
+import frc.actions.DriveAction;
+import frc.actions.LowerPistions;
+import frc.actions.RaiseFrontPistions;
+import frc.actions.RaiseRearPistions;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
 import frc.subsystems.Climb;
@@ -44,6 +49,12 @@ public class Robot extends TimedRobot {
   public ArmRaise armRaise;
   public ArmWheels armWheels;
   public HatchGrab hatchGrabber;
+
+  private long climbTimer;
+  private boolean timerActive;
+  private boolean weAreCLIMBING;
+  private boolean climbInit;
+  private ActionQueue actionQueue;
   
 
   /**
@@ -140,6 +151,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    if (weAreCLIMBING) {
+      if (!climbInit) {
+        actionQueue = new ActionQueue();
+        actionQueue.addAction(new LowerPistions(2));
+        actionQueue.addAction(new RaiseFrontPistions());
+        actionQueue.addAction(new RaiseRearPistions());
+        actionQueue.addAction(new DriveAction(.5));
+
+        climbInit = true;
+      }
+      actionQueue.step();
+      return;
+    }
+
     driveInverted = box.getSwitch(Constants.BOX_INVERSE_BUTTON_ROW, Constants.BOX_INVERSE_BUTTON_COLLUMN);
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
@@ -160,6 +185,32 @@ public class Robot extends TimedRobot {
     }
     if(manipulatorController.getRawButton(Constants.ARM_RELEASE_BUTTON)){ //LTrig
       armWheels.back();
+    }
+
+    /*
+     * Box is like this
+     * 1 = forward 0 = back x = not used
+     * 
+     * +---------+
+     * |         |
+     * |         |
+     * |         |
+     * | x x x x |
+     * | 1 0 1 0 |
+     * +---------+
+     *      
+     * */
+    if(box.getSwitch(1,0) && !box.getSwitch(1,1) && box.getSwitch(1,2) && !box.getSwitch(1,3)) {
+      if (!timerActive) {
+        timerActive = true;
+        climbTimer = System.currentTimeMillis() + 1000;
+      }
+    } else {
+      timerActive = false;
+    }
+
+    if (timerActive && System.currentTimeMillis() > climbTimer) {
+      weAreCLIMBING = true;
     }
   }
 
