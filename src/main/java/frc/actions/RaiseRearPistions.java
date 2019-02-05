@@ -7,13 +7,13 @@
 
 package frc.actions;
 
+import frc.robot.Robot;
+
 /**
  * Add your docs here.
  */
-public class RaiseFront implements Actionable {
-    public RaiseFront() {
-        
-    }
+public class RaiseRearPistions implements Actionable {
+
 
     @Override
     public void startAction() {
@@ -22,17 +22,18 @@ public class RaiseFront implements Actionable {
 
     @Override
     public void periodic() {
-
+        Robot.climb.creepForward();
     }
 
     @Override
     public void endAction() {
-
+        Robot.climb.retractRear();
+        Robot.climb.stopCreep();
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return Robot.distanceRear.getValue() > 2000;
     }
-}
 
+}
