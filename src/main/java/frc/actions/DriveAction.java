@@ -2,7 +2,6 @@ package frc.actions;
 
 import frc.robot.Robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class DriveAction extends TimerBase{
 	private double speed = 0.5;

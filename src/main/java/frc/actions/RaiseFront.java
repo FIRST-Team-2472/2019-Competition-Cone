@@ -11,8 +11,7 @@ package frc.actions;
  * Add your docs here.
  */
 public class RaiseFront implements Actionable {
-    public RaiseFront()
-    {
+    public RaiseFront() {
         
     }
 

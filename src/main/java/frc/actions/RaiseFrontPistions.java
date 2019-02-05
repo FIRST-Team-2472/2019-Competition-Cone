@@ -7,20 +7,33 @@
 
 package frc.actions;
 
+import frc.robot.Robot;
+
 /**
  * Add your docs here.
  */
-public class RaisePi
+public class RaiseFrontPistions implements Actionable {
 
 
+    @Override
+    public void startAction() {
 
+    }
 
-stions implements Actionable{
+    @Override
+    public void periodic() {
+        Robot.climb.creepForward();
+    }
 
+    @Override
+    public void endAction() {
+        Robot.climb.retractFront();
+        Robot.climb.stopCreep();
+    }
 
+    @Override
+    public boolean isFinished() {
+        return Robot.distanceFront.getValue() > 2000;
+    }
 
-
-
-
-    enum side {FRONT, REAR};
 }
