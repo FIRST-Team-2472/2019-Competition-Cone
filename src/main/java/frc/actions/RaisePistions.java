@@ -7,25 +7,20 @@
 
 package frc.actions;
 
-import frc.robot.Robot;
-
 /**
  * Add your docs here.
  */
-public class LowerPistions extends TimerBase {
+public class RaisePi
 
-    public LowerPistions(double time) {
-        super(time);
-    }
 
-    @Override
-    public void periodic() {
-        Robot.climb.raiseFront();
-        Robot.climb.raiseRear();
-    }
 
-    @Override
-    public void endAction() {
 
-    }
+stions implements Actionable{
+
+
+
+
+
+
+    enum side {FRONT, REAR};
 }

@@ -10,11 +10,7 @@ package frc.actions;
 /**
  * Add your docs here.
  */
-public class NullAction extends ActionBase {
-
-    public NullAction() {
-        super(0);
-    }
+public class NullAction  implements Actionable {
 
     @Override
     public void periodic() {
@@ -24,5 +20,15 @@ public class NullAction extends ActionBase {
     @Override
     public void endAction() {
 
+    }
+
+    @Override
+    public void startAction() {
+
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }
