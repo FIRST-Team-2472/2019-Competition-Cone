@@ -51,6 +51,10 @@ public class Drive {
         runFrontRight(speed);
     }
 
+    public void stopMotors() {
+        runAllMotors(0);
+    }
+
     public void runFrontLeft(double speed) {
         frontLeft.set(ControlMode.PercentOutput, speed);
     }
