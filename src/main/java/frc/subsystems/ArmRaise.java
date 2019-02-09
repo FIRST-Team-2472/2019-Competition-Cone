@@ -21,11 +21,11 @@ public class ArmRaise {
         doubleSolenoid = new DoubleSolenoid(Constants.ARM_RAISER_FORWARD_CHANNEL, Constants.ARM_RAISER_REVERSE_CHANNEL);
     }
 
-    public void out() {
+    public void up() {
         doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void in() {
+    public void down() {
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }

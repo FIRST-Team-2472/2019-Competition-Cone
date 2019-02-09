@@ -62,7 +62,7 @@ public class Climb {
     }
 
     public void stopCreep() {
-        setCreep(2);
+        setCreep(0);
     }
 
     public void setCreep(double power) {
