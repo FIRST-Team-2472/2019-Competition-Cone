@@ -24,12 +24,12 @@ public class DriveAction extends TimerBase{
 	
 	@Override
 	public void periodic() {
-		Robot.d.runAllMotors(speed);
+		Robot.d.runDriveMotors(speed);
 	}
 
 	@Override
 	public void endAction() {
-		Robot.d.runAllMotors(0);
+		Robot.d.runDriveMotors(0);
 		
 	}
 

@@ -44,7 +44,7 @@ public class Drive {
         tankDrive(leftRightArray[0], leftRightArray[1]);
     }
 
-    public void runAllMotors(double speed) {
+    public void runDriveMotors(double speed) {
         runBackLeft(speed);
         runBackRight(speed);
         runFrontLeft(speed);
@@ -52,7 +52,7 @@ public class Drive {
     }
 
     public void stopMotors() {
-        runAllMotors(0);
+        runDriveMotors(0);
     }
 
     public void runFrontLeft(double speed) {

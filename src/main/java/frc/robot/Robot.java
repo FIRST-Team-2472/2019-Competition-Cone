@@ -175,10 +175,10 @@ public class Robot extends TimedRobot {
       hatchGrabber.in();
     }
     if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
-      armRaise.out();
+      armRaise.up();
     }
     if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
-      armRaise.out();
+      armRaise.up();
     }
     if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
       armWheels.forward();
@@ -213,12 +213,47 @@ public class Robot extends TimedRobot {
       weAreCLIMBING = true;
     }
   }
-
+  
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
+    if(manipulatorController.getAButton())
+    {
+      hatchGrabber.out();
+    }
+    if(manipulatorController.getXButton())
+    {
+      armRaise.up();
+    }
+    if(manipulatorController.getYButton())
+    {
+      armRaise.down();
+    }
+    if(manipulatorController.getBButton())
+    {
+      hatchGrabber.in();
+    }
+    d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
+    armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
+    climb.setCreep(manipulatorController.getX(Hand.kLeft));
+    if(manipulatorController.getBumper(Hand.kLeft))
+    {
+      climb.raiseFront();
+    }
+    if(manipulatorController.getBumper(Hand.kRight))
+    {
+      climb.raiseRear();
+    }
+    if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5)
+    {
+      climb.retractFront();
+    }
+    if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5);
+    {
+      climb.retractRear();
+    }
   }
 
   @Override

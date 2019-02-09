@@ -16,16 +16,23 @@ public class ArmWheels {
   public ArmWheels() {
     r = new TalonSRX(Constants.ARM_WHEELS_RIGHT);
     l = new TalonSRX(Constants.ARM_WHEELS_LEFT);
+    l.setInverted(true);
   }
 
   public void forward() {
     r.set(ControlMode.PercentOutput,1);
-    l.set(ControlMode.PercentOutput,-1);
-  }
-  public void back() {
-    r.set(ControlMode.PercentOutput,-1);
     l.set(ControlMode.PercentOutput,1);
   }
+  public void back() {
+    r.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,1);
+  }
+  public void setMotorSpeed(double speed)
+  {
+    r.set(ControlMode.PercentOutput,speed);
+    l.set(ControlMode.PercentOutput,speed);
+  }
+
   public void stop() {
     r.set(ControlMode.PercentOutput,0);
     l.set(ControlMode.PercentOutput,0);
