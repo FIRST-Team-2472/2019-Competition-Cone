@@ -44,28 +44,5 @@ public class SpinAction extends TimerBase {
     @Override
     public void endAction() {
         Robot.d.stopMotors();
-
-
-
-
-
-
-
-
-        \
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
     }
 }
