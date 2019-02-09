@@ -7,20 +7,13 @@
 
 package frc.actions;
 
+import frc.robot.Robot;
+
 /**
  * Add your docs here.
  */
-public class NullAction  implements Actionable {
+public class RaiseRearPistions implements Actionable {
 
-    @Override
-    public void periodic() {
-
-    }
-
-    @Override
-    public void endAction() {
-
-    }
 
     @Override
     public void startAction() {
@@ -28,7 +21,19 @@ public class NullAction  implements Actionable {
     }
 
     @Override
-    public boolean isFinished() {
-        return true;
+    public void periodic() {
+        Robot.climb.creepForward();
     }
+
+    @Override
+    public void endAction() {
+        Robot.climb.retractRear();
+        Robot.climb.stopCreep();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Robot.distanceRear.getValue() > 2000;
+    }
+
 }

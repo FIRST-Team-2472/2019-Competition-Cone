@@ -10,7 +10,7 @@ package frc.actions;
 /**
  * Add your docs here.
  */
-public class WaitAction extends ActionBase {
+public class WaitAction extends TimerBase {
 
     public WaitAction(double time) {
         super(time);

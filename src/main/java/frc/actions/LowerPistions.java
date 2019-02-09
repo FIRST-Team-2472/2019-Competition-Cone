@@ -7,28 +7,25 @@
 
 package frc.actions;
 
+import frc.robot.Robot;
+
 /**
  * Add your docs here.
  */
-public class NullAction  implements Actionable {
+public class LowerPistions extends TimerBase {
+
+    public LowerPistions(double time) {
+        super(time);
+    }
 
     @Override
     public void periodic() {
-
+        Robot.climb.raiseFront();
+        Robot.climb.raiseRear();
     }
 
     @Override
     public void endAction() {
 
-    }
-
-    @Override
-    public void startAction() {
-
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true;
     }
 }

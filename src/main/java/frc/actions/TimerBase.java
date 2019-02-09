@@ -1,12 +1,12 @@
 package frc.actions;
 
-public abstract class ActionBase implements Actionable{
+public abstract class TimerBase implements Actionable{
 	
 	private long endTime;
 	private final double lifetime;
 	
 
-	public ActionBase (double lifetime) {
+	public TimerBase (double lifetime) {
 		this.lifetime = lifetime;
 	}
 	
