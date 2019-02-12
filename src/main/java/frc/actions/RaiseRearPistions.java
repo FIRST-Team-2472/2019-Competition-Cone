@@ -22,18 +22,19 @@ public class RaiseRearPistions implements Actionable {
 
     @Override
     public void periodic() {
-        Robot.climb.creepForward();
+        //Robot.climb.creepForward();
     }
 
     @Override
     public void endAction() {
-        Robot.climb.retractRear();
-        Robot.climb.stopCreep();
+        //Robot.climb.retractRear();
+        //Robot.climb.stopCreep();
     }
 
     @Override
     public boolean isFinished() {
-        return Robot.distanceRear.getValue() > 2000;
+        //return Robot.distanceRear.getValue() > 2000;
+        return true;
     }
 
 }

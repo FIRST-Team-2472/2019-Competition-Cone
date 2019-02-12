@@ -38,17 +38,17 @@ public class Robot extends TimedRobot {
   private XboxController driverController;
   private XboxController manipulatorController;
   private Switchbox box;
-  private Relay lightring;
+  //private Relay lightring;
   private boolean driveInverted;
   
   public static Drive d;
-  public static Climb climb;
-  public static AnalogInput distanceFront;
-  public static AnalogInput distanceRear;
+  //public static Climb climb;
+  //public static AnalogInput distanceFront;
+  //public static AnalogInput distanceRear;
 
-  public ArmRaise armRaise;
+  //public ArmRaise armRaise;
   public ArmWheels armWheels;
-  public HatchGrab hatchGrabber;
+  //public HatchGrab hatchGrabber;
 
   private long climbTimer;
   private boolean timerActive;
@@ -69,10 +69,11 @@ public class Robot extends TimedRobot {
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
-    lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
-    climb = new Climb();
-    distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
-    distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
+    armWheels = new ArmWheels();
+    //lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
+    //climb = new Climb();
+    //distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
+    //distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
   }
 
   /**
@@ -101,7 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    lightring.set(Value.kOn);
+    //lightring.set(Value.kOn);
   }
 
   /**
@@ -144,7 +145,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    lightring.set(Value.kOn);
+    //lightring.set(Value.kOn);
   }
   /**
    * This function is called periodically during operator control.
@@ -153,6 +154,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     if (weAreCLIMBING) {
       if (!climbInit) {
+        /*
         actionQueue = new ActionQueue();
         actionQueue.addAction(new LowerPistions(2));
         actionQueue.addAction(new RaiseFrontPistions());
@@ -160,8 +162,10 @@ public class Robot extends TimedRobot {
         actionQueue.addAction(new DriveAction(.5));
 
         climbInit = true;
+        */
+        System.out.println("climbing mode actvated");
       }
-      actionQueue.step();
+      //actionQueue.step();
       return;
     }
 
@@ -169,22 +173,22 @@ public class Robot extends TimedRobot {
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
     if(manipulatorController.getRawButton(Constants.HATCH_GRAB_BUTTON)){ //A
-      hatchGrabber.out();
+      //hatchGrabber.out();
     }
     if(manipulatorController.getRawButton(Constants.HATCH_RELEASE_BUTTON)){ //B
-      hatchGrabber.in();
+      //hatchGrabber.in();
     }
     if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
-      armRaise.up();
+      //armRaise.up();
     }
     if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
-      armRaise.up();
+      //armRaise.up();
     }
     if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
-      armWheels.forward();
+      //armWheels.forward();
     }
     if(manipulatorController.getRawButton(Constants.ARM_RELEASE_BUTTON)){ //LTrig
-      armWheels.back();
+      //armWheels.back();
     }
 
     /*
@@ -221,43 +225,43 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     if(manipulatorController.getAButton())
     {
-      hatchGrabber.out();
+      //hatchGrabber.out();
     }
     if(manipulatorController.getXButton())
     {
-      armRaise.up();
+      //armRaise.up();
     }
     if(manipulatorController.getYButton())
     {
-      armRaise.down();
+      //armRaise.down();
     }
     if(manipulatorController.getBButton())
     {
-      hatchGrabber.in();
+      //hatchGrabber.in();
     }
     d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
-    armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
-    climb.setCreep(manipulatorController.getX(Hand.kLeft));
+    /*armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));*/
+    //climb.setCreep(manipulatorController.getX(Hand.kLeft));
     if(manipulatorController.getBumper(Hand.kLeft))
     {
-      climb.raiseFront();
+      //climb.raiseFront();
     }
     if(manipulatorController.getBumper(Hand.kRight))
     {
-      climb.raiseRear();
+      //climb.raiseRear();
     }
     if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5)
     {
-      climb.retractFront();
+      //climb.retractFront();
     }
     if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5);
     {
-      climb.retractRear();
+      //climb.retractRear();
     }
   }
 
   @Override
   public void disabledInit() {
-    lightring.set(Value.kOff);
+    //lightring.set(Value.kOff);
   }
 }

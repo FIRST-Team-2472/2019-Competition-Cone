@@ -21,20 +21,20 @@ public class Drive {
     private TalonSRX backRight;
 
     public Drive(int frontLeftID, int backLeftID, int frontRightID, int backRightID) {
-        frontLeft = new TalonSRX(frontLeftID);
+        //frontLeft = new TalonSRX(frontLeftID);
         backLeft = new TalonSRX(backLeftID);
-        frontRight = new TalonSRX(frontRightID);
+        //frontRight = new TalonSRX(frontRightID);
         backRight = new TalonSRX(frontRightID);
-        frontRight.setInverted(true);
-        backRight.setInverted(true);
+        //frontRight.setInverted(true);
+        backLeft.setInverted(true);
     }
 
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
         runBackLeft(leftSpeed);
-        runFrontLeft(leftSpeed);
+        //runFrontLeft(leftSpeed);
         runBackRight(rightSpeed);
-        runFrontRight(rightSpeed);
+        //runFrontRight(rightSpeed);
     }
 
     public void tankDrive(double[] leftRightArray) {
@@ -47,8 +47,8 @@ public class Drive {
     public void runDriveMotors(double speed) {
         runBackLeft(speed);
         runBackRight(speed);
-        runFrontLeft(speed);
-        runFrontRight(speed);
+        //runFrontLeft(speed);
+        //runFrontRight(speed);
     }
 
     public void stopMotors() {
@@ -56,7 +56,7 @@ public class Drive {
     }
 
     public void runFrontLeft(double speed) {
-        frontLeft.set(ControlMode.PercentOutput, speed);
+        //frontLeft.set(ControlMode.PercentOutput, speed);
     }
 
     public void runBackLeft(double speed) {
@@ -64,7 +64,7 @@ public class Drive {
     }
 
     public void runFrontRight(double speed) {
-        frontRight.set(ControlMode.PercentOutput, speed);
+        //frontRight.set(ControlMode.PercentOutput, speed);
     }
 
     public void runBackRight(double speed) {
