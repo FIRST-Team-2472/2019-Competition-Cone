@@ -7,7 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -38,17 +40,18 @@ public class Robot extends TimedRobot {
   private XboxController driverController;
   private XboxController manipulatorController;
   private Switchbox box;
-  //private Relay lightring;
+  private Compressor compressor;
+  private Relay lightring;
   private boolean driveInverted;
   
   public static Drive d;
   //public static Climb climb;
-  //public static AnalogInput distanceFront;
-  //public static AnalogInput distanceRear;
+  public static AnalogInput distanceFront;
+  public static AnalogInput distanceRear;
 
-  //public ArmRaise armRaise;
+  public ArmRaise armRaise;
   public ArmWheels armWheels;
-  //public HatchGrab hatchGrabber;
+  public HatchGrab hatchGrabber;
 
   private long climbTimer;
   private boolean timerActive;
@@ -69,11 +72,17 @@ public class Robot extends TimedRobot {
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
     d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     box = new Switchbox(Constants.BOX_ID);
-    armWheels = new ArmWheels();
-    //lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
+    //armWheels = new ArmWheels();
+    lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
     //climb = new Climb();
+    hatchGrabber = new HatchGrab();
+    armRaise = new ArmRaise();
     //distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
     //distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
+    compressor = new Compressor(2);
+    compressor.setClosedLoopControl(true);
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
   }
 
   /**
@@ -145,7 +154,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    //lightring.set(Value.kOn);
+    lightring.set(Value.kOn);
   }
   /**
    * This function is called periodically during operator control.
@@ -225,22 +234,24 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     if(manipulatorController.getAButton())
     {
-      //hatchGrabber.out();
+      hatchGrabber.out();
     }
     if(manipulatorController.getXButton())
     {
-      //armRaise.up();
+      System.out.println("Up!!");
+      armRaise.up();
     }
     if(manipulatorController.getYButton())
     {
-      //armRaise.down();
+      System.out.println("Down!!");
+      armRaise.down();
     }
     if(manipulatorController.getBButton())
     {
-      //hatchGrabber.in();
+      hatchGrabber.in();
     }
     d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
-    /*armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));*/
+    //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
     //climb.setCreep(manipulatorController.getX(Hand.kLeft));
     if(manipulatorController.getBumper(Hand.kLeft))
     {
@@ -262,6 +273,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    //lightring.set(Value.kOff);
+    lightring.set(Value.kOff);
   }
 }

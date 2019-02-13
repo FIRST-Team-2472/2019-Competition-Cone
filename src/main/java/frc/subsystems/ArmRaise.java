@@ -15,21 +15,23 @@ import frc.robot.Constants;
  */
 public class ArmRaise {
 
-    private DoubleSolenoid doubleSolenoidr;
-    private DoubleSolenoid doubleSolenoidl;
+    private DoubleSolenoid doubleSolenoid;
+
+    public ArmRaise(int pcmId, int forwardChannel, int reverseChannel) {
+        doubleSolenoid = new DoubleSolenoid(pcmId, forwardChannel, reverseChannel);
+    }
 
     public ArmRaise() {
-        doubleSolenoidr = new DoubleSolenoid(Constants.ARM_RAISER_FORWARD_CHANNEL_RIGHT, Constants.ARM_RAISER_REVERSE_CHANNEL_RIGHT);
-        doubleSolenoidl = new DoubleSolenoid(Constants.ARM_RAISER_FORWARD_CHANNEL_LEFT, Constants.ARM_RAISER_REVERSE_CHANNEL_LEFT);
+        this(2, Constants.ARM_RAISER_FORWARD_CHANNEL, Constants.ARM_RAISER_REVERSE_CHANNEL);
     }
 
     public void up() {
-        doubleSolenoidr.set(DoubleSolenoid.Value.kForward);
-        doubleSolenoidl.set(DoubleSolenoid.Value.kForward);
+        System.out.println("Up (inside class)!!");
+        doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void down() {
-        doubleSolenoidr.set(DoubleSolenoid.Value.kReverse);
-        doubleSolenoidl.set(DoubleSolenoid.Value.kReverse);
+        System.out.println("Down (inside class)!!");
+        doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }
