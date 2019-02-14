@@ -13,10 +13,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class ArmWheels {
   TalonSRX r,l;
+  public ArmWheels(int left, int right) {
+    r = new TalonSRX(left);
+    l = new TalonSRX(right);
+  }
+
   public ArmWheels() {
-    r = new TalonSRX(Constants.ARM_WHEELS_RIGHT);
-    l = new TalonSRX(Constants.ARM_WHEELS_LEFT);
-    l.setInverted(true);
+    this(Constants.ARM_WHEELS_RIGHT, Constants.ARM_WHEELS_LEFT);
   }
 
   public void forward() {

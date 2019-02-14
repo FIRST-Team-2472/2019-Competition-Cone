@@ -8,6 +8,7 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants;
 
 /**
@@ -22,16 +23,18 @@ public class ArmRaise {
     }
 
     public ArmRaise() {
-        this(2, Constants.ARM_RAISER_FORWARD_CHANNEL, Constants.ARM_RAISER_REVERSE_CHANNEL);
+        this(1, Constants.ARM_RAISER_FORWARD_CHANNEL, Constants.ARM_RAISER_REVERSE_CHANNEL);
     }
 
     public void up() {
-        System.out.println("Up (inside class)!!");
         doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void down() {
-        System.out.println("Down (inside class)!!");
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public void off() {
+        doubleSolenoid.set(Value.kOff);
     }
 }

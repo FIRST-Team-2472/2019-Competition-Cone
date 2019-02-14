@@ -28,15 +28,11 @@ public class SpinAction extends TimerBase {
         switch (direction) {
             case LEFT:
                 Robot.d.runBackRight(.2);
-                Robot.d.runFrontRight(.2);
                 Robot.d.runBackLeft(-.2);
-                Robot.d.runFrontLeft(-.2);
                 break;
             case RIGHT:
                 Robot.d.runBackRight(-.2);
-                Robot.d.runFrontRight(-.2);
                 Robot.d.runBackLeft(.2);
-                Robot.d.runFrontLeft(.2);
                 break;
         }
     }

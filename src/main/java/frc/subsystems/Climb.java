@@ -24,21 +24,21 @@ public class Climb {
 
     public Climb(int leftCreepID, int rightCreepID, int frontSolonoidForward, int frontSolonoidReverse,
             int rearSolenoidForward, int rearSolenoidReverse) {
-        init(leftCreepID, rightCreepID, frontSolonoidForward, frontSolonoidReverse,
-            rearSolenoidForward, rearSolenoidReverse);
-    }
-
-    public void init(int leftCreepID, int rightCreepID, int frontSolonoidForward, int frontSolonoidReverse,
-            int rearSolenoidForward, int rearSolenoidReverse) {
-        leftCreep = new TalonSRX(leftCreepID);
-        rightCreep = new TalonSRX(rightCreepID);
-        rearSolenoid = new DoubleSolenoid(frontSolonoidForward, frontSolonoidReverse);
-        frontSolenoid = new DoubleSolenoid(rearSolenoidForward, rearSolenoidReverse);
+                
+            leftCreep = new TalonSRX(leftCreepID);
+            rightCreep = new TalonSRX(rightCreepID);
+            rightCreep.setInverted(true);
+            frontSolenoid = new DoubleSolenoid(2, frontSolonoidForward, frontSolonoidReverse);
+            rearSolenoid = new DoubleSolenoid(2, rearSolenoidForward, rearSolenoidReverse);
     }
 
     public Climb() {
-        init(Constants.CREEP_LEFT_MOTOR_ID, Constants.CREEP_RIGHT_MOTOR_ID, Constants.CLIMB_FRONT_FW_CHANNEL,
-                Constants.CLIMB_FRONT_RV_CHANNEL, Constants.CLIMB_REAR_FW_CHANNEL, Constants.CLIMB_REAR_RV_CHANNEL);
+        this(Constants.CREEP_LEFT_MOTOR_ID,
+             Constants.CREEP_RIGHT_MOTOR_ID,
+              Constants.CLIMB_FRONT_FW_CHANNEL,
+                Constants.CLIMB_FRONT_RV_CHANNEL,
+                 Constants.CLIMB_REAR_FW_CHANNEL,
+                  Constants.CLIMB_REAR_RV_CHANNEL);
     }
 
     public void raiseFront() {
@@ -49,12 +49,20 @@ public class Climb {
         frontSolenoid.set(Value.kReverse);
     }
 
+    public void frontOff() {
+        frontSolenoid.set(Value.kOff);
+    }
+
     public void raiseRear() {
         rearSolenoid.set(Value.kForward);
     }
 
     public void retractRear() {
         rearSolenoid.set(Value.kReverse);
+    }
+
+    public void rearOff() {
+        rearSolenoid.set(Value.kOff);
     }
 
     public void creepForward() {

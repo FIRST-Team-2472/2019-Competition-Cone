@@ -17,8 +17,8 @@ public class HatchGrab {
     DoubleSolenoid grab;
     DoubleSolenoid push;
     public HatchGrab() {
-        grab = new DoubleSolenoid(2, 4, 5);
-        push = new DoubleSolenoid(2, 0, 1);
+        grab = new DoubleSolenoid(1, 4, 5);
+        push = new DoubleSolenoid(1, 0, 1);
     }
 
 
@@ -34,7 +34,7 @@ public class HatchGrab {
         grab.set(DoubleSolenoid.Value.kForward);
     }
     public void release() {
-        grab.set(DoubleSolenoid.Value.kForward);
+        grab.set(DoubleSolenoid.Value.kReverse);
     }
 
 }

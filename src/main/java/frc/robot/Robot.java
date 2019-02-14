@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
   private boolean driveInverted;
   
   public static Drive d;
-  //public static Climb climb;
+  public static Climb climb;
   public static AnalogInput distanceFront;
   public static AnalogInput distanceRear;
 
@@ -70,11 +70,11 @@ public class Robot extends TimedRobot {
     rightStick = new Joystick(Constants.JOYSTICK_RIGHT);
     driverController = new XboxController(Constants.DRIVE_CONTROLLER);
     manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
-    d = new Drive(Constants.FRONT_LEFT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
+    d = new Drive();
     box = new Switchbox(Constants.BOX_ID);
-    //armWheels = new ArmWheels();
+    armWheels = new ArmWheels();
     lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
-    //climb = new Climb();
+    climb = new Climb();
     hatchGrabber = new HatchGrab();
     armRaise = new ArmRaise();
     //distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
@@ -182,22 +182,23 @@ public class Robot extends TimedRobot {
     double[] leftRight = getXboxControl(driverController);
     d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
     if(manipulatorController.getRawButton(Constants.HATCH_GRAB_BUTTON)){ //A
-      //hatchGrabber.out();
+      hatchGrabber.out();
     }
     if(manipulatorController.getRawButton(Constants.HATCH_RELEASE_BUTTON)){ //B
-      //hatchGrabber.in();
+      hatchGrabber.in();
     }
     if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
-      //armRaise.up();
-    }
-    if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
-      //armRaise.up();
+      armRaise.up();
+    } else if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
+      armRaise.up();
+    } else {
+      armRaise.off();
     }
     if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
-      //armWheels.forward();
+      armWheels.forward();
     }
     if(manipulatorController.getRawButton(Constants.ARM_RELEASE_BUTTON)){ //LTrig
-      //armWheels.back();
+      armWheels.back();
     }
 
     /*
@@ -227,9 +228,9 @@ public class Robot extends TimedRobot {
     }
   }
   
-  /**
-   * This function is called periodically during test mode.
-   */
+  @Override
+  public void testInit() {
+  }
   @Override
   public void testPeriodic() {
     if(manipulatorController.getAButton())
@@ -238,37 +239,44 @@ public class Robot extends TimedRobot {
     }
     if(manipulatorController.getXButton())
     {
-      System.out.println("Up!!");
       armRaise.up();
     }
     if(manipulatorController.getYButton())
     {
-      System.out.println("Down!!");
       armRaise.down();
     }
     if(manipulatorController.getBButton())
     {
       hatchGrabber.in();
     }
-    d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
+    if (driverController.getAButton()) {
+      hatchGrabber.grip();
+    } else if (driverController.getBButton()) {
+      hatchGrabber.release();
+    } else {
+      hatchGrabber.o
+    }
+    //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
     //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
-    //climb.setCreep(manipulatorController.getX(Hand.kLeft));
+    climb.setCreep(manipulatorController.getX(Hand.kLeft));
     if(manipulatorController.getBumper(Hand.kLeft))
     {
-      //climb.raiseFront();
+      climb.raiseFront();
+    } else if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5) {
+      climb.retractFront();
+    } else {
+      climb.frontOff();
     }
-    if(manipulatorController.getBumper(Hand.kRight))
-    {
-      //climb.raiseRear();
+
+    if(manipulatorController.getBumper(Hand.kRight)) {
+      climb.raiseRear();
+    } else if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5) {
+      climb.retractRear();
+    } else {
+      climb.rearOff();
     }
-    if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5)
-    {
-      //climb.retractFront();
-    }
-    if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5);
-    {
-      //climb.retractRear();
-    }
+
+
   }
 
   @Override
