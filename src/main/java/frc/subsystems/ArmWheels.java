@@ -24,16 +24,16 @@ public class ArmWheels {
 
   public void forward() {
     r.set(ControlMode.PercentOutput,1);
-    l.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,-1);
   }
   public void back() {
     r.set(ControlMode.PercentOutput,1);
-    l.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,-1);
   }
   public void setMotorSpeed(double speed)
   {
     r.set(ControlMode.PercentOutput,speed);
-    l.set(ControlMode.PercentOutput,speed);
+    l.set(ControlMode.PercentOutput,-speed);
   }
 
   public void stop() {

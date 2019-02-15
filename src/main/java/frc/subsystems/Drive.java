@@ -23,7 +23,7 @@ public class Drive {
     public Drive(int leftFootID, int rightFootID) {
         leftFoot = new TalonSRX(leftFootID);
         rightFoot = new TalonSRX(rightFootID);
-        leftFoot.setInverted(true);
+        rightFoot.setInverted(true);
     }
 
     public Drive() {

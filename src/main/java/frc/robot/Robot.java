@@ -16,12 +16,18 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Relay.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
+import frc.actions.ArmWheelsAction;
 import frc.actions.DriveAction;
+import frc.actions.GrabberExtendAction;
+import frc.actions.GrabberGripAction;
+import frc.actions.JoinActions;
 import frc.actions.LowerPistions;
 import frc.actions.RaiseFrontPistions;
 import frc.actions.RaiseRearPistions;
+import frc.actions.WaitAction;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
 import frc.subsystems.Climb;
@@ -48,16 +54,19 @@ public class Robot extends TimedRobot {
   public static Climb climb;
   public static AnalogInput distanceFront;
   public static AnalogInput distanceRear;
-
-  public ArmRaise armRaise;
-  public ArmWheels armWheels;
-  public HatchGrab hatchGrabber;
+  public double LeftError;
+  public double RightError;
+  public static ArmRaise armRaise;
+  public static ArmWheels armWheels;
+  public static HatchGrab hatchGrabber;
 
   private long climbTimer;
   private boolean timerActive;
   private boolean weAreCLIMBING;
   private boolean climbInit;
   private ActionQueue actionQueue;
+
+  private ActionQueue testActions;
   
 
   /**
@@ -66,12 +75,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    leftStick = new Joystick(Constants.JOYSTICK_LEFT);
-    rightStick = new Joystick(Constants.JOYSTICK_RIGHT);
+    leftStick = new Joystick(0);
+    rightStick = new Joystick(1);
+    LeftError = leftStick.getY();
+    RightError = rightStick.getY();
     driverController = new XboxController(Constants.DRIVE_CONTROLLER);
-    manipulatorController = new XboxController(Constants.MANIPULATOR_CONTROLLER);
+    manipulatorController = new XboxController(2);
     d = new Drive();
-    box = new Switchbox(Constants.BOX_ID);
+    box = new Switchbox(3);
     armWheels = new ArmWheels();
     lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
     climb = new Climb();
@@ -122,7 +133,10 @@ public class Robot extends TimedRobot {
   }
 
   private double[] getJoystickControl(Joystick leftStick, Joystick rightStick) {
-    return new double[]{leftStick.getY(), rightStick.getY()};
+    double a = leftStick.getY()-LeftError,b = rightStick.getY()-RightError;
+    if(Math.abs(a) < 0.2) a = 0;
+    if(Math.abs(b) < 0.2) b = 0;
+    return new double[]{a, b};
   }
 
   private double[] getXboxControl(XboxController driverController) {
@@ -178,28 +192,37 @@ public class Robot extends TimedRobot {
       return;
     }
 
-    driveInverted = box.getSwitch(Constants.BOX_INVERSE_BUTTON_ROW, Constants.BOX_INVERSE_BUTTON_COLLUMN);
-    double[] leftRight = getXboxControl(driverController);
-    d.tankDrive(driveInverted ? -leftRight[1] : leftRight[0], driveInverted ? -leftRight[0] : leftRight[1]);
-    if(manipulatorController.getRawButton(Constants.HATCH_GRAB_BUTTON)){ //A
+    driveInverted = box.getSwitch(0, 0);
+    double[] leftRight = getJoystickControl(leftStick, rightStick);
+    SmartDashboard.putNumber("left", leftRight[0]);
+    SmartDashboard.putNumber("right", leftRight[1]);
+    int LEFT = 0;
+    int RIGHT = 1;
+    d.tankDrive(driveInverted ? -leftRight[RIGHT] : leftRight[LEFT], driveInverted ? -leftRight[LEFT] : leftRight[RIGHT]);
+    
+    //d.tankDrive(leftRight);
+    if(manipulatorController.getAButton()){ //A
       hatchGrabber.out();
-    }
-    if(manipulatorController.getRawButton(Constants.HATCH_RELEASE_BUTTON)){ //B
+    } else if(manipulatorController.getBButton()){ //B
       hatchGrabber.in();
+    } else {
+      hatchGrabber.pushOff();
     }
-    if(manipulatorController.getRawButton(Constants.ARM_RAISE_BUTTON)){ //X
+    if(manipulatorController.getXButton()){ //X
+      hatchGrabber.grip();
+    } else if(manipulatorController.getYButton()){ //Y
+      hatchGrabber.release();
+    } else {
+      hatchGrabber.grabOff();
+    }
+    if(manipulatorController.getBumper(Hand.kLeft)) {
       armRaise.up();
-    } else if(manipulatorController.getRawButton(Constants.ARM_LOWER_BUTTON)){ //Y
-      armRaise.up();
+    } else if (manipulatorController.getBumper(Hand.kRight)) {
+      armRaise.down();
     } else {
       armRaise.off();
     }
-    if(manipulatorController.getRawButton(Constants.ARM_GRAB_BUTTON)){ //RTrig
-      armWheels.forward();
-    }
-    if(manipulatorController.getRawButton(Constants.ARM_RELEASE_BUTTON)){ //LTrig
-      armWheels.back();
-    }
+    armWheels.setMotorSpeed(manipulatorController.getY());
 
     /*
      * Box is like this
@@ -230,9 +253,27 @@ public class Robot extends TimedRobot {
   
   @Override
   public void testInit() {
+    testActions = new ActionQueue();
+    testActions.addAction(new ArmWheelsAction(1, 2));
+    testActions.addAction(new ArmWheelsAction(-1, 2));
+    
+    testActions.addAction(new DriveAction(2, .2));
+    testActions.addAction(new DriveAction(2, -.2));
+
+    testActions.addAction(new JoinActions(new GrabberExtendAction(true), new WaitAction(2)));
+    testActions.addAction(new JoinActions(new GrabberExtendAction(false), new WaitAction(2)));
+    
+    testActions.addAction(new JoinActions(new GrabberGripAction(true), new WaitAction(2)));
+    testActions.addAction(new JoinActions(new GrabberGripAction(false), new WaitAction(2)));
+
   }
+
   @Override
   public void testPeriodic() {
+    if (false) {
+    //testActions.step();
+    }
+
     if(manipulatorController.getAButton())
     {
       hatchGrabber.out();
@@ -254,26 +295,36 @@ public class Robot extends TimedRobot {
     } else if (driverController.getBButton()) {
       hatchGrabber.release();
     } else {
-      hatchGrabber.o
+      hatchGrabber.grabOff();
     }
     //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
     //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
     climb.setCreep(manipulatorController.getX(Hand.kLeft));
     if(manipulatorController.getBumper(Hand.kLeft))
     {
-      climb.raiseFront();
+      //climb.raiseFront();
     } else if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5) {
-      climb.retractFront();
+      //climb.retractFront();
     } else {
-      climb.frontOff();
+      //climb.frontOff();
     }
 
     if(manipulatorController.getBumper(Hand.kRight)) {
-      climb.raiseRear();
+      //climb.raiseRear();
     } else if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5) {
+      //climb.retractRear();
+    } else {
+      //climb.rearOff();
+    }
+    if(manipulatorController.getBumper(Hand.kLeft)) {
+      climb.raiseRear();
+      climb.raiseFront();
+    } else if (manipulatorController.getBumper(Hand.kRight)) {
+      climb.retractFront();
       climb.retractRear();
     } else {
       climb.rearOff();
+      climb.frontOff();
     }
 
 

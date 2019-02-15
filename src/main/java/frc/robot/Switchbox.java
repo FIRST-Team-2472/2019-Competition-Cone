@@ -32,12 +32,12 @@ public class Switchbox extends GenericHID {
 
     @Override
     public double getX(Hand hand) {
-        return 0;
+        return getRawAxis(0);
     }
 
     @Override
     public double getY(Hand hand) {
-        return 0;
+        return getRawAxis(1);
     }
 
 

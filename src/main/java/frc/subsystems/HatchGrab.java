@@ -8,6 +8,7 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants;
 
 /**
@@ -25,9 +26,11 @@ public class HatchGrab {
     public void out() {
         push.set(DoubleSolenoid.Value.kReverse);
     }
-
     public void in() {
         push.set(DoubleSolenoid.Value.kForward);
+    }
+    public void pushOff() {
+        push.set(Value.kOff);
     }
 
     public void grip() {
@@ -35,6 +38,9 @@ public class HatchGrab {
     }
     public void release() {
         grab.set(DoubleSolenoid.Value.kReverse);
+    }
+    public void grabOff() {
+        grab.set(Value.kOff);
     }
 
 }
