@@ -193,7 +193,12 @@ public class Robot extends TimedRobot {
     }
 
     driveInverted = box.getSwitch(0, 0);
-    double[] leftRight = getJoystickControl(leftStick, rightStick);
+    double[] leftRight;
+    if (box.getSwitch(0, 1)) {
+      leftRight = getJoystickControl(leftStick, rightStick);
+    } else {
+      leftRight = getXboxControl(driverController);
+    }
     SmartDashboard.putNumber("left", leftRight[0]);
     SmartDashboard.putNumber("right", leftRight[1]);
     int LEFT = 0;
