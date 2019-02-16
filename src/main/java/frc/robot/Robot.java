@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
+import frc.actions.ArmLiftAction;
 import frc.actions.ArmWheelsAction;
 import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
@@ -49,7 +51,7 @@ public class Robot extends TimedRobot {
   private Compressor compressor;
   private Relay lightring;
   private boolean driveInverted;
-  
+
   public static Drive d;
   public static Climb climb;
   public static AnalogInput distanceFront;
@@ -67,20 +69,17 @@ public class Robot extends TimedRobot {
   private ActionQueue actionQueue;
 
   private ActionQueue testActions;
-  
 
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
     leftStick = new Joystick(0);
     rightStick = new Joystick(1);
-    LeftError = leftStick.getY();
-    RightError = rightStick.getY();
-    driverController = new XboxController(Constants.DRIVE_CONTROLLER);
-    manipulatorController = new XboxController(2);
+    driverController = new XboxController(2);
+    manipulatorController = new XboxController(4);
     d = new Drive();
     box = new Switchbox(3);
     armWheels = new ArmWheels();
@@ -88,12 +87,14 @@ public class Robot extends TimedRobot {
     climb = new Climb();
     hatchGrabber = new HatchGrab();
     armRaise = new ArmRaise();
-    //distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
-    //distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
+    // distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
+    // distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
     compressor = new Compressor(2);
     compressor.setClosedLoopControl(true);
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
+    UsbCamera a = CameraServer.getInstance().startAutomaticCapture(0);
+    UsbCamera b = CameraServer.getInstance().startAutomaticCapture(1);
+    a.setFPS(20);
+    a.setResolution(128, 128);
   }
 
   /**
@@ -123,6 +124,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //lightring.set(Value.kOn);
+    teleopInit();
   }
 
   /**
@@ -130,13 +132,28 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    teleopPeriodic();
   }
 
   private double[] getJoystickControl(Joystick leftStick, Joystick rightStick) {
     double a = leftStick.getY()-LeftError,b = rightStick.getY()-RightError;
     if(Math.abs(a) < 0.2) a = 0;
     if(Math.abs(b) < 0.2) b = 0;
-    return new double[]{a, b};
+    double outLeft = a, outRight = b;
+    double power = 2;
+    if (outLeft < 0) {
+      outLeft = -Math.pow(outLeft, power);
+    } else {
+      outLeft = Math.pow(outLeft, power);
+    }
+
+    if (outRight < 0) {
+      outRight = -Math.pow(outRight, power);
+    } else {
+      outRight = Math.pow(outRight, power);
+    }
+
+    return new double[]{outLeft, outRight};
   }
 
   private double[] getXboxControl(XboxController driverController) {
@@ -165,10 +182,16 @@ public class Robot extends TimedRobot {
 		}
     return new double[]{leftSide, rightSide};
   }
-
+  boolean joysticksInited = false;
   @Override
   public void teleopInit() {
     lightring.set(Value.kOn);
+    if (!joysticksInited) {
+      LeftError = leftStick.getY();
+      RightError = rightStick.getY();
+      joysticksInited = true;
+    }
+    
   }
   /**
    * This function is called periodically during operator control.
@@ -191,7 +214,13 @@ public class Robot extends TimedRobot {
       //actionQueue.step();
       return;
     }
+    if (leftStick.getRawButton(3)) {
+      LeftError = leftStick.getY();
+    }
 
+    if (rightStick.getRawButton(3)) {
+      RightError = rightStick.getY();
+    }
     driveInverted = box.getSwitch(0, 0);
     double[] leftRight;
     if (box.getSwitch(0, 1)) {
@@ -270,6 +299,9 @@ public class Robot extends TimedRobot {
     
     testActions.addAction(new JoinActions(new GrabberGripAction(true), new WaitAction(2)));
     testActions.addAction(new JoinActions(new GrabberGripAction(false), new WaitAction(2)));
+
+    testActions.addAction(new JoinActions(new ArmLiftAction(true), new WaitAction(2)));
+    testActions.addAction(new JoinActions(new ArmLiftAction(false), new WaitAction(2)));
 
   }
 
