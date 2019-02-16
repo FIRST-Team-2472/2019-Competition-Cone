@@ -270,9 +270,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-    if (false) {
     //testActions.step();
-    }
 
     if(manipulatorController.getAButton())
     {
