@@ -27,7 +27,6 @@ public class Climb {
                 
             leftCreep = new TalonSRX(leftCreepID);
             rightCreep = new TalonSRX(rightCreepID);
-            rightCreep.setInverted(true);
             frontSolenoid = new DoubleSolenoid(2, frontSolonoidForward, frontSolonoidReverse);
             rearSolenoid = new DoubleSolenoid(2, rearSolenoidForward, rearSolenoidReverse);
     }
@@ -83,6 +82,6 @@ public class Climb {
     }
     
     public void setRight(double power) {
-        leftCreep.set(ControlMode.PercentOutput, power);
+        rightCreep.set(ControlMode.PercentOutput, power);
     }
 }

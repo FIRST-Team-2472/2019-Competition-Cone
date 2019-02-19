@@ -40,8 +40,8 @@ public class Constants {
 
 
     // Creep motors 
-    public static final int CREEP_LEFT_MOTOR_ID = 4;
-    public static final int CREEP_RIGHT_MOTOR_ID = 5;
+    public static final int CREEP_LEFT_MOTOR_ID = 12;
+    public static final int CREEP_RIGHT_MOTOR_ID = 14;
 
     // Climbing pistions conts
     public static final int CLIMB_REAR_FW_CHANNEL = 2;

@@ -13,10 +13,12 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Relay.Value;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
@@ -70,6 +72,7 @@ public class Robot extends TimedRobot {
 
   private ActionQueue testActions;
 
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -87,14 +90,19 @@ public class Robot extends TimedRobot {
     climb = new Climb();
     hatchGrabber = new HatchGrab();
     armRaise = new ArmRaise();
-    // distanceFront = new AnalogInput(Constants.DISTANCE_SENSOR_FRONT_PORT);
-    // distanceRear = new AnalogInput(Constants.DISTANCE_SENSOR_REAR_PORT);
+    distanceFront = new AnalogInput(1);
+    distanceRear = new AnalogInput(0);
     compressor = new Compressor(2);
     compressor.setClosedLoopControl(true);
     UsbCamera a = CameraServer.getInstance().startAutomaticCapture(0);
     UsbCamera b = CameraServer.getInstance().startAutomaticCapture(1);
     a.setFPS(20);
     a.setResolution(128, 128);
+    LiveWindow.addSensor("climb", "front", distanceFront);
+    LiveWindow.addSensor("climb", "rear", distanceRear);
+    //LiveWindow.add(distanceFront);
+    //LiveWindow.add(distanceRear);
+
   }
 
   /**
@@ -291,8 +299,8 @@ public class Robot extends TimedRobot {
     testActions.addAction(new ArmWheelsAction(1, 2));
     testActions.addAction(new ArmWheelsAction(-1, 2));
     
-    testActions.addAction(new DriveAction(2, .2));
-    testActions.addAction(new DriveAction(2, -.2));
+    //testActions.addAction(new DriveAction(2, .2));
+    //testActions.addAction(new DriveAction(2, -.2));
 
     testActions.addAction(new JoinActions(new GrabberExtendAction(true), new WaitAction(2)));
     testActions.addAction(new JoinActions(new GrabberExtendAction(false), new WaitAction(2)));
@@ -304,11 +312,18 @@ public class Robot extends TimedRobot {
     testActions.addAction(new JoinActions(new ArmLiftAction(false), new WaitAction(2)));
 
   }
-
+  int loop;
   @Override
   public void testPeriodic() {
     //testActions.step();
-
+    SmartDashboard.putNumber("Distance Front", (double)distanceFront.getValue());
+    SmartDashboard.putNumber("Distance Rear", (double)distanceRear.getValue());
+    if (loop++ > 100) {
+      System.out.println("Distance Front "+distanceFront.getValue());
+      System.out.println("Distance Rear "+distanceRear.getValue());
+      loop = 0;
+    }
+    
     if(manipulatorController.getAButton())
     {
       hatchGrabber.out();
@@ -316,10 +331,11 @@ public class Robot extends TimedRobot {
     if(manipulatorController.getXButton())
     {
       armRaise.up();
-    }
-    if(manipulatorController.getYButton())
+    } else if(manipulatorController.getYButton())
     {
       armRaise.down();
+    } else {
+      armRaise.off();
     }
     if(manipulatorController.getBButton())
     {
@@ -334,23 +350,28 @@ public class Robot extends TimedRobot {
     }
     //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
     //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
-    climb.setCreep(manipulatorController.getX(Hand.kLeft));
+    if (manipulatorController.getAButton()) {
+      climb.creepForward();
+    } else {
+      climb.stopCreep();
+
+    }
     if(manipulatorController.getBumper(Hand.kLeft))
     {
-      //climb.raiseFront();
+      climb.raiseFront();
     } else if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5) {
-      //climb.retractFront();
+      climb.retractFront();
     } else {
-      //climb.frontOff();
+      climb.frontOff();
     }
 
     if(manipulatorController.getBumper(Hand.kRight)) {
-      //climb.raiseRear();
+      climb.raiseRear();
     } else if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5) {
-      //climb.retractRear();
+      climb.retractRear();
     } else {
-      //climb.rearOff();
-    }
+      climb.rearOff();
+    }/*
     if(manipulatorController.getBumper(Hand.kLeft)) {
       climb.raiseRear();
       climb.raiseFront();
@@ -360,7 +381,7 @@ public class Robot extends TimedRobot {
     } else {
       climb.rearOff();
       climb.frontOff();
-    }
+    }*/
 
 
   }
