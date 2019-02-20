@@ -28,8 +28,10 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON_ROW = 0;
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
-    public static final int ARM_RAISER_FORWARD_CHANNEL = 0;
-    public static final int ARM_RAISER_REVERSE_CHANNEL = 1;
+    public static final int ARM_RAISER_FORWARD_CHANNEL_RIGHT = 0;
+    public static final int ARM_RAISER_REVERSE_CHANNEL_RIGHT = 1;
+    public static final int ARM_RAISER_FORWARD_CHANNEL_LEFT = 2;
+    public static final int ARM_RAISER_REVERSE_CHANNEL_LEFT = 3;
     public static final int LIGHTRING_RELAY_ID = 0;
     public static final int ARM_WHEELS_RIGHT = 4;
     public static final int ARM_WHEELS_LEFT = 5;
@@ -51,4 +53,7 @@ public class Constants {
     public static final int ARM_LOWER_BUTTON = 3;
     public static final int ARM_GRAB_BUTTON = 4;
     public static final int ARM_RELEASE_BUTTON = 5;
+
+    public static final int DISTANCE_SENSOR_REAR_PORT = 0;
+    public static final int DISTANCE_SENSOR_FRONT_PORT = 1;
 }

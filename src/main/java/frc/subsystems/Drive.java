@@ -44,11 +44,15 @@ public class Drive {
         tankDrive(leftRightArray[0], leftRightArray[1]);
     }
 
-    public void runAllMotors(double speed) {
+    public void runDriveMotors(double speed) {
         runBackLeft(speed);
         runBackRight(speed);
         runFrontLeft(speed);
         runFrontRight(speed);
+    }
+
+    public void stopMotors() {
+        runDriveMotors(0);
     }
 
     public void runFrontLeft(double speed) {

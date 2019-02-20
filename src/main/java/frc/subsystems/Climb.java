@@ -58,8 +58,16 @@ public class Climb {
     }
 
     public void creepForward() {
-        leftCreep.set(ControlMode.PercentOutput, .2);
-        rightCreep.set(ControlMode.PercentOutput, .2);
+        setCreep(.2);
+    }
+
+    public void stopCreep() {
+        setCreep(0);
+    }
+
+    public void setCreep(double power) {
+        leftCreep.set(ControlMode.PercentOutput, power);
+        rightCreep.set(ControlMode.PercentOutput, power);
     }
 
     public void setLeft(double power) {
