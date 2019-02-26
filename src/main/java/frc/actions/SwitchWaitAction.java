@@ -17,14 +17,21 @@ public class SwitchWaitAction implements Actionable{
 
     private final Switchbox switchbox;
     private boolean stablePosition;
+    private int switchX, switchY;
+
+    public SwitchWaitAction(Switchbox box, int switchX, int switchY) {
+        switchbox = box;
+        this.switchX = switchX;
+        this.switchY = switchY;
+    }
 
     public SwitchWaitAction(Switchbox box) {
-        switchbox = box;
+        this(box, 0, 3);
     }
 
     @Override
     public void startAction() {
-        stablePosition = switchbox.getSwitch(0, 3);
+        stablePosition = switchbox.getSwitch(switchX, switchY);
     }
 
     @Override
@@ -39,7 +46,7 @@ public class SwitchWaitAction implements Actionable{
 
     @Override
     public boolean isFinished() {
-        return switchbox.getSwitch(0, 3) != stablePosition;
+        return switchbox.getSwitch(switchX, switchY) != stablePosition;
     }
 
 

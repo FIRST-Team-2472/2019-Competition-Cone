@@ -12,29 +12,27 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class RaiseRearPistions implements Actionable {
+public class ArmLiftAction extends TimerBase {
 
+    private final boolean up;
 
-    @Override
-    public void startAction() {
-
+    public ArmLiftAction(boolean up) {
+        super(1);
+        this.up = up;
     }
 
     @Override
     public void periodic() {
-        //Robot.climb.creepForward();
+        if (up) {
+            Robot.armRaise.up();
+        } else {
+            Robot.armRaise.down();
+        }
     }
 
     @Override
     public void endAction() {
-        //Robot.climb.retractRear();
-        //Robot.climb.stopCreep();
-    }
-
-    @Override
-    public boolean isFinished() {
-        //return Robot.distanceRear.getValue() > 2000;
-        return true;
+        Robot.armRaise.off();
     }
 
 }

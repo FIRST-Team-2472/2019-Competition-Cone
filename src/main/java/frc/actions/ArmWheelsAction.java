@@ -12,29 +12,22 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class RaiseRearPistions implements Actionable {
+public class ArmWheelsAction extends TimerBase {
 
+    private double power;
 
-    @Override
-    public void startAction() {
-
+    public ArmWheelsAction(double power, double time) {
+        super(time);
+        this.power = power;
     }
 
     @Override
     public void periodic() {
-        //Robot.climb.creepForward();
+        Robot.armWheels.setMotorSpeed(power);
     }
 
     @Override
     public void endAction() {
-        //Robot.climb.retractRear();
-        //Robot.climb.stopCreep();
+        Robot.armWheels.stop();
     }
-
-    @Override
-    public boolean isFinished() {
-        //return Robot.distanceRear.getValue() > 2000;
-        return true;
-    }
-
 }

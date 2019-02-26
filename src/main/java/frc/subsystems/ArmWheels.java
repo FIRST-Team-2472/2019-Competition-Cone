@@ -13,24 +13,27 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class ArmWheels {
   TalonSRX r,l;
+  public ArmWheels(int left, int right) {
+    r = new TalonSRX(left);
+    l = new TalonSRX(right);
+  }
+
   public ArmWheels() {
-    r = new TalonSRX(Constants.ARM_WHEELS_RIGHT);
-    l = new TalonSRX(Constants.ARM_WHEELS_LEFT);
-    l.setInverted(true);
+    this(Constants.ARM_WHEELS_RIGHT, Constants.ARM_WHEELS_LEFT);
   }
 
   public void forward() {
     r.set(ControlMode.PercentOutput,1);
-    l.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,-1);
   }
   public void back() {
     r.set(ControlMode.PercentOutput,1);
-    l.set(ControlMode.PercentOutput,1);
+    l.set(ControlMode.PercentOutput,-1);
   }
   public void setMotorSpeed(double speed)
   {
     r.set(ControlMode.PercentOutput,speed);
-    l.set(ControlMode.PercentOutput,speed);
+    l.set(ControlMode.PercentOutput,-speed);
   }
 
   public void stop() {

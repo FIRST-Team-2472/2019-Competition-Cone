@@ -12,29 +12,26 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class RaiseRearPistions implements Actionable {
+public class GrabberGripAction extends TimerBase {
 
+    private final boolean grip;
 
-    @Override
-    public void startAction() {
-
+    public GrabberGripAction(boolean constrict) {
+        super(.1);
+        grip = constrict;
     }
 
     @Override
     public void periodic() {
-        //Robot.climb.creepForward();
+        if (grip) {
+            Robot.hatchGrabber.grip();
+        } else {
+            Robot.hatchGrabber.release();
+        }
     }
 
     @Override
     public void endAction() {
-        //Robot.climb.retractRear();
-        //Robot.climb.stopCreep();
+        Robot.hatchGrabber.grabOff();
     }
-
-    @Override
-    public boolean isFinished() {
-        //return Robot.distanceRear.getValue() > 2000;
-        return true;
-    }
-
 }

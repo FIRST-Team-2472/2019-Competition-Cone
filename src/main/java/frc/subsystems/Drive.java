@@ -10,31 +10,30 @@ package frc.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import frc.robot.Constants;
+
 
 /**
  * Add your docs here.
  */
 public class Drive {
-    private TalonSRX frontLeft;
-    private TalonSRX backLeft;
-    private TalonSRX frontRight;
-    private TalonSRX backRight;
+    private TalonSRX leftFoot;
+    private TalonSRX rightFoot;
 
-    public Drive(int frontLeftID, int backLeftID, int frontRightID, int backRightID) {
-        frontLeft = new TalonSRX(frontLeftID);
-        backLeft = new TalonSRX(backLeftID);
-        frontRight = new TalonSRX(frontRightID);
-        backRight = new TalonSRX(frontRightID);
-        frontRight.setInverted(true);
-        backRight.setInverted(true);
+    public Drive(int leftFootID, int rightFootID) {
+        leftFoot = new TalonSRX(leftFootID);
+        rightFoot = new TalonSRX(rightFootID);
+        rightFoot.setInverted(true);
+    }
+
+    public Drive() {
+        this(Constants.LEFT_MOTOR_ID, Constants.RIGHT_MOTOR_ID);
     }
 
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
         runBackLeft(leftSpeed);
-        runFrontLeft(leftSpeed);
         runBackRight(rightSpeed);
-        runFrontRight(rightSpeed);
     }
 
     public void tankDrive(double[] leftRightArray) {
@@ -47,27 +46,17 @@ public class Drive {
     public void runDriveMotors(double speed) {
         runBackLeft(speed);
         runBackRight(speed);
-        runFrontLeft(speed);
-        runFrontRight(speed);
     }
 
     public void stopMotors() {
         runDriveMotors(0);
     }
 
-    public void runFrontLeft(double speed) {
-        frontLeft.set(ControlMode.PercentOutput, speed);
-    }
-
     public void runBackLeft(double speed) {
-        backLeft.set(ControlMode.PercentOutput, speed);
-    }
-
-    public void runFrontRight(double speed) {
-        frontRight.set(ControlMode.PercentOutput, speed);
+        leftFoot.set(ControlMode.PercentOutput, speed);
     }
 
     public void runBackRight(double speed) {
-        backRight.set(ControlMode.PercentOutput, speed);
+        rightFoot.set(ControlMode.PercentOutput, speed);
     }
 }
