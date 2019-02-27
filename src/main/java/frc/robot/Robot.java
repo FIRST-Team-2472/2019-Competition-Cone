@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -24,13 +23,9 @@ import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
 import frc.actions.ArmLiftAction;
 import frc.actions.ArmWheelsAction;
-import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
 import frc.actions.GrabberGripAction;
 import frc.actions.JoinActions;
-import frc.actions.LowerPistions;
-import frc.actions.RaiseFrontPistions;
-import frc.actions.RaiseRearPistions;
 import frc.actions.WaitAction;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
@@ -45,32 +40,42 @@ import frc.subsystems.HatchGrab;
  * project.
  */
 public class Robot extends TimedRobot {
+  // Driver Inputs
   private Joystick leftStick;
   private Joystick rightStick;
   private XboxController driverController;
   private XboxController manipulatorController;
   private Switchbox box;
-  private Compressor compressor;
-  private Relay lightring;
-  private boolean driveInverted;
 
+  private Compressor compressor;
+
+  // A relay that would turn on and off a lightring
+  // This would be for vision tracking
+  private Relay lightring;
+
+  // The subsystems for the robot
   public static Drive d;
   public static Climb climb;
-  public static AnalogInput distanceFront;
-  public static AnalogInput distanceRear;
-  public double LeftError;
-  public double RightError;
   public static ArmRaise armRaise;
   public static ArmWheels armWheels;
   public static HatchGrab hatchGrabber;
 
+  // Drive mode varibles
+  public double LeftError;
+  public double RightError;
+  private boolean driveInverted;
+
+  // Climbing actions and objects
+  private ActionQueue testActions;
+  public static AnalogInput distanceFront;
+  public static AnalogInput distanceRear;
+  
+  // Vars for chaanging into clibin mode during teleop
   private long climbTimer;
   private boolean timerActive;
   private boolean weAreCLIMBING;
   private boolean climbInit;
-  private ActionQueue actionQueue;
 
-  private ActionQueue testActions;
 
 
   /**
@@ -79,43 +84,33 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Driver input
     leftStick = new Joystick(0);
     rightStick = new Joystick(1);
     driverController = new XboxController(2);
     manipulatorController = new XboxController(4);
-    d = new Drive();
     box = new Switchbox(3);
+
+    // Init compressor
+    compressor = new Compressor(2);
+    compressor.setClosedLoopControl(true);
+
+    // Subsystems
+    d = new Drive();
     armWheels = new ArmWheels();
-    lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
     climb = new Climb();
     hatchGrabber = new HatchGrab();
     armRaise = new ArmRaise();
+
+    lightring = new Relay(Constants.LIGHTRING_RELAY_ID);
+
+    // Distace sensors for climbing
     distanceFront = new AnalogInput(1);
     distanceRear = new AnalogInput(0);
-    compressor = new Compressor(2);
-    compressor.setClosedLoopControl(true);
-    UsbCamera a = CameraServer.getInstance().startAutomaticCapture(0);
-    UsbCamera b = CameraServer.getInstance().startAutomaticCapture(1);
-    a.setFPS(20);
-    a.setResolution(128, 128);
-    LiveWindow.addSensor("climb", "front", distanceFront);
-    LiveWindow.addSensor("climb", "rear", distanceRear);
-    //LiveWindow.add(distanceFront);
-    //LiveWindow.add(distanceRear);
 
-  }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-
+    // Init cameras
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
   }
 
   /**
@@ -131,7 +126,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //lightring.set(Value.kOn);
+    // Because we are active turn on the lightring
+    lightring.set(Value.kOn);
+    // Because drivers control during autonomous call teleop Init
     teleopInit();
   }
 
@@ -140,28 +137,31 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    // Because drivers control during autonomous call teleop periodic
     teleopPeriodic();
   }
 
   private double[] getJoystickControl(Joystick leftStick, Joystick rightStick) {
-    double a = leftStick.getY()-LeftError,b = rightStick.getY()-RightError;
+    // Start by getting the raw values
+    double a = leftStick.getY();
+    double b = rightStick.getY();
+
+    // Subtract error gathered by zeroing;
+    a -= LeftError;
+    b -= RightError;
+
+    // Deadzones. If the value is small ignore it.
     if(Math.abs(a) < 0.2) a = 0;
     if(Math.abs(b) < 0.2) b = 0;
-    double outLeft = a, outRight = b;
+
+    
     double power = 2;
-    if (outLeft < 0) {
-      outLeft = -Math.pow(outLeft, power);
-    } else {
-      outLeft = Math.pow(outLeft, power);
-    }
+    // This is quaring the values from the joysticks
+    // thus making finer small adjusments
+    a = a < 0 ? -Math.pow(a, power) : Math.pow(a, power);
+    b = b < 0 ? -Math.pow(b, power) : Math.pow(b, power);
 
-    if (outRight < 0) {
-      outRight = -Math.pow(outRight, power);
-    } else {
-      outRight = Math.pow(outRight, power);
-    }
-
-    return new double[]{outLeft, outRight};
+    return new double[]{a, b};
   }
 
   private double[] getXboxControl(XboxController driverController) {
@@ -177,7 +177,6 @@ public class Robot extends TimedRobot {
 				rightSide = turn;
 				leftSide = -turn;
 		} else {
-
 			double baseSpeed = speed - slowdown;
 
 			if(turningRight) {
@@ -193,7 +192,9 @@ public class Robot extends TimedRobot {
   boolean joysticksInited = false;
   @Override
   public void teleopInit() {
+    // Because we started make sure the lightring is on
     lightring.set(Value.kOn);
+    // This init sectino can be called twice so I put this in
     if (!joysticksInited) {
       LeftError = leftStick.getY();
       RightError = rightStick.getY();
@@ -206,9 +207,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    // the weAreCLIMBING section is a alternate mode where driving stops and the robot climb
     if (weAreCLIMBING) {
       if (!climbInit) {
-        /*
+        /* 
         actionQueue = new ActionQueue();
         actionQueue.addAction(new LowerPistions(2));
         actionQueue.addAction(new RaiseFrontPistions());
