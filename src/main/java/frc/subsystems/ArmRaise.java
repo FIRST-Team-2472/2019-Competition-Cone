@@ -34,7 +34,7 @@ public class ArmRaise {
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void relax() {
+    public void off() {
         doubleSolenoid.set(Value.kOff);
     }
 }

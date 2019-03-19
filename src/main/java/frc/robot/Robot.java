@@ -277,7 +277,7 @@ public class Robot extends TimedRobot {
       hatchGrabber.in();
     } else {
       // Set the solonoid to relax and not favor in or out
-      hatchGrabber.relaxPush();
+      hatchGrabber.pushOff();
     }
 
     // Hatch grabber again
@@ -289,7 +289,7 @@ public class Robot extends TimedRobot {
       hatchGrabber.release();
     } else {
       // Set the solonoid to relax and not favor in or out
-      hatchGrabber.relaxGrab();
+      hatchGrabber.grabOff();
     }
 
     // Arm raise lever thing
@@ -301,7 +301,7 @@ public class Robot extends TimedRobot {
       armRaise.down();
     } else {
       // Set the solonoid to relax and not favor in or out
-      armRaise.relax();
+      armRaise.off();
     }
     armWheels.setMotorSpeed(manipulatorController.getY());
 
@@ -375,7 +375,7 @@ public class Robot extends TimedRobot {
     {
       hatchGrabber.in();
     } else {
-      hatchGrabber.relaxPush();
+      hatchGrabber.pushOff();
     }
     if(manipulatorController.getXButton())
     {
@@ -384,7 +384,7 @@ public class Robot extends TimedRobot {
     {
       armRaise.down();
     } else {
-      armRaise.relax();
+      armRaise.off();
     }
     
     if (driverController.getAButton()) {
@@ -392,7 +392,7 @@ public class Robot extends TimedRobot {
     } else if (driverController.getBButton()) {
       hatchGrabber.release();
     } else {
-      hatchGrabber.relaxGrab();
+      hatchGrabber.grabOff();
     }
     //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
     //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
