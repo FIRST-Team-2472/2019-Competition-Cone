@@ -32,6 +32,6 @@ public class GrabberExtendAction extends TimerBase {
 
     @Override
     public void endAction() {
-        Robot.hatchGrabber.pushOff();
+        Robot.hatchGrabber.relaxPush();
     }
 }

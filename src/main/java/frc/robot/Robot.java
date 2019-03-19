@@ -208,6 +208,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // the weAreCLIMBING section is a alternate mode where driving stops and the robot climb
+    // XXX: teleop climbing has not been tested
     if (weAreCLIMBING) {
       if (!climbInit) {
         /* 
@@ -224,15 +225,17 @@ public class Robot extends TimedRobot {
       //actionQueue.step();
       return;
     }
+
+    // Zero outs the joysticks
     if (leftStick.getRawButton(3)) {
       LeftError = leftStick.getY();
     }
-
     if (rightStick.getRawButton(3)) {
       RightError = rightStick.getY();
     }
-    driveInverted = box.getSwitch(0, 0);
+
     double[] leftRight;
+
     if (box.getSwitch(0, 1)) {
       leftRight = getJoystickControl(leftStick, rightStick);
     } else {
@@ -240,36 +243,70 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putNumber("left", leftRight[0]);
     SmartDashboard.putNumber("right", leftRight[1]);
+    
+    // This section of code is to revese the robot
+    // When you flick the switch the "front" of the robot will be on the back
+    // Picture:
+    //    Pre Switch flip     Post Switch Flip
+    // +-------------------+----------------------+
+    // |                   |                      |
+    // |   ^               |          (left) ^    |
+    // |   |(left)         |                 |    |
+    // |   |               |                 |    |
+    // |  [+) --> (forward)|  (forward) <-- [+)   |
+    // |   |               |                 |    |
+    // |   | (right)       |      (right)    |    |
+    // |   V               |                 V    |
+    // +-------------------+----------------------+
+    // [+) = robot
+
+    // Top left switch 
+    driveInverted = box.getSwitch(0, 0);
+    // "advanced" logic to switch direction
+    // XXX: review this logic because when driveInverted the drive is incorrect
     int LEFT = 0;
     int RIGHT = 1;
     d.tankDrive(driveInverted ? -leftRight[RIGHT] : leftRight[LEFT], driveInverted ? -leftRight[LEFT] : leftRight[RIGHT]);
     
-    //d.tankDrive(leftRight);
-    if(manipulatorController.getAButton()){ //A
+    // Hatch grabber
+    // A is push out hatch grabber
+    // B is bring in hatch grabber
+    if(manipulatorController.getAButton()) {
       hatchGrabber.out();
-    } else if(manipulatorController.getBButton()){ //B
+    } else if(manipulatorController.getBButton()) {
       hatchGrabber.in();
     } else {
-      hatchGrabber.pushOff();
+      // Set the solonoid to relax and not favor in or out
+      hatchGrabber.relaxPush();
     }
-    if(manipulatorController.getXButton()){ //X
+
+    // Hatch grabber again
+    // X is to close the hatch grabber mechanism and grip a hatch
+    // X is to open the hatch grabber mechanism and release a hatch (hopefuly not onto the floor)
+    if(manipulatorController.getXButton()) {
       hatchGrabber.grip();
-    } else if(manipulatorController.getYButton()){ //Y
+    } else if(manipulatorController.getYButton()) { 
       hatchGrabber.release();
     } else {
-      hatchGrabber.grabOff();
+      // Set the solonoid to relax and not favor in or out
+      hatchGrabber.relaxGrab();
     }
+
+    // Arm raise lever thing
+    // Left bumper to raise the arm
+    // Right bumber to lower arm
     if(manipulatorController.getBumper(Hand.kLeft)) {
       armRaise.up();
     } else if (manipulatorController.getBumper(Hand.kRight)) {
       armRaise.down();
     } else {
-      armRaise.off();
+      // Set the solonoid to relax and not favor in or out
+      armRaise.relax();
     }
     armWheels.setMotorSpeed(manipulatorController.getY());
 
     /*
-     * Box is like this
+     * Box is like this to trigger climbing
      * 1 = forward 0 = back x = not used
      * 
      * +---------+
@@ -281,6 +318,8 @@ public class Robot extends TimedRobot {
      * +---------+
      *      
      * */
+     
+    // XXX: teleop climbing has not been tested
     if(box.getSwitch(1,0) && !box.getSwitch(1,1) && box.getSwitch(1,2) && !box.getSwitch(1,3)) {
       if (!timerActive) {
         timerActive = true;
@@ -297,6 +336,8 @@ public class Robot extends TimedRobot {
   
   @Override
   public void testInit() {
+    // This is initialzing a self test with many actions
+    // NOTE: why do we have to join with a wait action
     testActions = new ActionQueue();
     testActions.addAction(new ArmWheelsAction(1, 2));
     testActions.addAction(new ArmWheelsAction(-1, 2));
@@ -326,9 +367,15 @@ public class Robot extends TimedRobot {
       loop = 0;
     }
     
+    // Misc manual testing
     if(manipulatorController.getAButton())
     {
       hatchGrabber.out();
+    } else if(manipulatorController.getBButton())
+    {
+      hatchGrabber.in();
+    } else {
+      hatchGrabber.relaxPush();
     }
     if(manipulatorController.getXButton())
     {
@@ -337,18 +384,15 @@ public class Robot extends TimedRobot {
     {
       armRaise.down();
     } else {
-      armRaise.off();
+      armRaise.relax();
     }
-    if(manipulatorController.getBButton())
-    {
-      hatchGrabber.in();
-    }
+    
     if (driverController.getAButton()) {
       hatchGrabber.grip();
     } else if (driverController.getBButton()) {
       hatchGrabber.release();
     } else {
-      hatchGrabber.grabOff();
+      hatchGrabber.relaxGrab();
     }
     //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
     //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
@@ -373,7 +417,9 @@ public class Robot extends TimedRobot {
       climb.retractRear();
     } else {
       climb.rearOff();
-    }/*
+    }
+    
+    /* Dangrous button mappings to test climbing
     if(manipulatorController.getBumper(Hand.kLeft)) {
       climb.raiseRear();
       climb.raiseFront();

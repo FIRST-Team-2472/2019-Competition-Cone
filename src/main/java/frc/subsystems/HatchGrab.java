@@ -29,7 +29,7 @@ public class HatchGrab {
     public void in() {
         push.set(DoubleSolenoid.Value.kForward);
     }
-    public void pushOff() {
+    public void relaxPush() {
         push.set(Value.kOff);
     }
 
@@ -39,7 +39,7 @@ public class HatchGrab {
     public void release() {
         grab.set(DoubleSolenoid.Value.kReverse);
     }
-    public void grabOff() {
+    public void relaxGrab() {
         grab.set(Value.kOff);
     }
 
