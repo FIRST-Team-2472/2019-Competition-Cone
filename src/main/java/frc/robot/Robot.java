@@ -7,29 +7,29 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Relay.Value;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
 import frc.actions.ArmLiftAction;
 import frc.actions.ArmWheelsAction;
+import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
 import frc.actions.GrabberGripAction;
 import frc.actions.JoinActions;
+import frc.actions.RaiseClimbingPistions;
 import frc.actions.WaitAction;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
 import frc.subsystems.Climb;
+import frc.subsystems.Drive;
 import frc.subsystems.HatchGrab;
 
 /**
@@ -337,13 +337,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // This is initialzing a self test with many actions
-    // NOTE: why do we have to join with a wait action
+    // TODO: add ajustable timers to actions in order replace current use of JoinActions. See driveAction for example
     testActions = new ActionQueue();
     testActions.addAction(new ArmWheelsAction(1, 2));
     testActions.addAction(new ArmWheelsAction(-1, 2));
     
-    //testActions.addAction(new DriveAction(2, .2));
-    //testActions.addAction(new DriveAction(2, -.2));
+    testActions.addAction(new DriveAction(2, .2));
+    testActions.addAction(new DriveAction(2, -.2));
 
     testActions.addAction(new JoinActions(new GrabberExtendAction(true), new WaitAction(2)));
     testActions.addAction(new JoinActions(new GrabberExtendAction(false), new WaitAction(2)));
@@ -354,83 +354,92 @@ public class Robot extends TimedRobot {
     testActions.addAction(new JoinActions(new ArmLiftAction(true), new WaitAction(2)));
     testActions.addAction(new JoinActions(new ArmLiftAction(false), new WaitAction(2)));
 
+    testActions.addAction(new RaiseClimbingPistions(RaiseClimbingPistions.Type.FRONT, 4));
+    testActions.addAction(new WaitAction(1));
+    testActions.addAction(new RaiseClimbingPistions(RaiseClimbingPistions.Type.REAR, 4));
+
+
+
   }
   int loop;
   @Override
   public void testPeriodic() {
-    //testActions.step();
-    SmartDashboard.putNumber("Distance Front", (double)distanceFront.getValue());
-    SmartDashboard.putNumber("Distance Rear", (double)distanceRear.getValue());
-    if (loop++ > 100) {
-      System.out.println("Distance Front "+distanceFront.getValue());
-      System.out.println("Distance Rear "+distanceRear.getValue());
-      loop = 0;
-    }
-    
-    // Misc manual testing
-    if(manipulatorController.getAButton())
-    {
-      hatchGrabber.out();
-    } else if(manipulatorController.getBButton())
-    {
-      hatchGrabber.in();
+    // Enable test mode
+    if (false) {
+      testActions.step();
     } else {
-      hatchGrabber.relaxPush();
-    }
-    if(manipulatorController.getXButton())
-    {
-      armRaise.up();
-    } else if(manipulatorController.getYButton())
-    {
-      armRaise.down();
-    } else {
-      armRaise.relax();
-    }
-    
-    if (driverController.getAButton()) {
-      hatchGrabber.grip();
-    } else if (driverController.getBButton()) {
-      hatchGrabber.release();
-    } else {
-      hatchGrabber.relaxGrab();
-    }
-    //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
-    //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
-    if (manipulatorController.getAButton()) {
-      climb.creepForward();
-    } else {
-      climb.stopCreep();
+      SmartDashboard.putNumber("Distance Front", (double)distanceFront.getValue());
+      SmartDashboard.putNumber("Distance Rear", (double)distanceRear.getValue());
+      if (loop++ > 100) {
+        System.out.println("Distance Front "+distanceFront.getValue());
+        System.out.println("Distance Rear "+distanceRear.getValue());
+        loop = 0;
+      }
+      
+      // Misc manual testing
+      if(manipulatorController.getAButton())
+      {
+        hatchGrabber.out();
+      } else if(manipulatorController.getBButton())
+      {
+        hatchGrabber.in();
+      } else {
+        hatchGrabber.relaxPush();
+      }
+      if(manipulatorController.getXButton())
+      {
+        armRaise.up();
+      } else if(manipulatorController.getYButton())
+      {
+        armRaise.down();
+      } else {
+        armRaise.relax();
+      }
+      
+      if (driverController.getAButton()) {
+        hatchGrabber.grip();
+      } else if (driverController.getBButton()) {
+        hatchGrabber.release();
+      } else {
+        hatchGrabber.relaxGrab();
+      }
+      //d.runDriveMotors(manipulatorController.getY(Hand.kLeft));
+      //armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
+      if (manipulatorController.getAButton()) {
+        climb.creepForward();
+      } else {
+        climb.stopCreep();
 
-    }
-    if(manipulatorController.getBumper(Hand.kLeft))
-    {
-      climb.raiseFront();
-    } else if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5) {
-      climb.retractFront();
-    } else {
-      climb.frontOff();
-    }
+      }
+      if(manipulatorController.getBumper(Hand.kLeft))
+      {
+        climb.raiseFront();
+      } else if(manipulatorController.getTriggerAxis(Hand.kLeft) > 0.5) {
+        climb.retractFront();
+      } else {
+        climb.frontOff();
+      }
 
-    if(manipulatorController.getBumper(Hand.kRight)) {
-      climb.raiseRear();
-    } else if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5) {
-      climb.retractRear();
-    } else {
-      climb.rearOff();
+      if(manipulatorController.getBumper(Hand.kRight)) {
+        climb.raiseRear();
+      } else if(manipulatorController.getTriggerAxis(Hand.kRight) > 0.5) {
+        climb.retractRear();
+      } else {
+        climb.rearOff();
+      }
+      
+      /* Dangrous button mappings to test climbing
+      if(manipulatorController.getBumper(Hand.kLeft)) {
+        climb.raiseRear();
+        climb.raiseFront();
+      } else if (manipulatorController.getBumper(Hand.kRight)) {
+        climb.retractFront();
+        climb.retractRear();
+      } else {
+        climb.rearOff();
+        climb.frontOff();
+      }*/
     }
-    
-    /* Dangrous button mappings to test climbing
-    if(manipulatorController.getBumper(Hand.kLeft)) {
-      climb.raiseRear();
-      climb.raiseFront();
-    } else if (manipulatorController.getBumper(Hand.kRight)) {
-      climb.retractFront();
-      climb.retractRear();
-    } else {
-      climb.rearOff();
-      climb.frontOff();
-    }*/
-
 
   }
 
