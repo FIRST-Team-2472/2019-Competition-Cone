@@ -12,20 +12,38 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class LowerPistions extends TimerBase {
+public class LowerClimbingPistions extends TimerBase {
 
-    public LowerPistions(double time) {
+    public enum Type {FRONT, REAR, ALL};
+
+    private Type chosen;
+
+    public LowerClimbingPistions(LowerClimbingPistions.Type area, double time) {
         super(time);
+        chosen = area;
+    }
+
+    public LowerClimbingPistions(LowerClimbingPistions.Type area) {
+        this(area, 2);
     }
 
     @Override
     public void periodic() {
-        //Robot.climb.raiseFront();
-        //Robot.climb.raiseRear();
+        switch (chosen) {
+            case FRONT:
+                Robot.climb.retractFront();
+                break;
+            case REAR:
+                Robot.climb.retractRear();
+                break;
+            case ALL:
+                Robot.climb.retractFront();
+                Robot.climb.retractRear();
+        }
     }
 
     @Override
     public void endAction() {
-
     }
+
 }
