@@ -15,7 +15,7 @@ import frc.robot.Robot;
 public class RaiseClimbingPistions extends TimerBase {
 
     //public enum Type {FRONT_EXTEND, REAR_EXTEND, FRONT_RETRACT, REAR_RETRACT};
-    public enum Type {FRONT, REAR};
+    public enum Type {FRONT, REAR, ALL};
 
 
     private final Type type;
@@ -39,19 +39,14 @@ public class RaiseClimbingPistions extends TimerBase {
             case REAR:
                 Robot.climb.raiseRear();
                 break;
+            case ALL:
+                Robot.climb.raiseRear();
+                Robot.climb.raiseFront();
         }
     }
 
     @Override
     public void endAction() {
-        switch (type) {
-            case FRONT:
-                Robot.climb.retractFront();
-                break;
-            case REAR:
-                Robot.climb.retractRear();
-                break;
-        }    
     }
 
 }

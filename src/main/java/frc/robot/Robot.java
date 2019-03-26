@@ -24,6 +24,7 @@ import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
 import frc.actions.GrabberGripAction;
 import frc.actions.JoinActions;
+import frc.actions.LowerClimbingPistions;
 import frc.actions.RaiseClimbingPistions;
 import frc.actions.WaitAction;
 import frc.subsystems.ArmRaise;
@@ -354,9 +355,8 @@ public class Robot extends TimedRobot {
     testActions.addAction(new JoinActions(new ArmLiftAction(true), new WaitAction(2)));
     testActions.addAction(new JoinActions(new ArmLiftAction(false), new WaitAction(2)));
 
-    testActions.addAction(new RaiseClimbingPistions(RaiseClimbingPistions.Type.FRONT, 4));
-    testActions.addAction(new WaitAction(1));
-    testActions.addAction(new RaiseClimbingPistions(RaiseClimbingPistions.Type.REAR, 4));
+    testActions.addAction(new RaiseClimbingPistions(RaiseClimbingPistions.Type.ALL, 4));
+    testActions.addAction(new LowerClimbingPistions(LowerClimbingPistions.Type.ALL, 4));
 
 
 
