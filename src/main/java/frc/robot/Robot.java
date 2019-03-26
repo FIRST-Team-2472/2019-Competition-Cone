@@ -278,7 +278,7 @@ public class Robot extends TimedRobot {
       hatchGrabber.in();
     } else {
       // Set the solonoid to relax and not favor in or out
-      hatchGrabber.relaxPush();
+      hatchGrabber.pushOff();
     }
 
     // Hatch grabber again
@@ -290,7 +290,7 @@ public class Robot extends TimedRobot {
       hatchGrabber.release();
     } else {
       // Set the solonoid to relax and not favor in or out
-      hatchGrabber.relaxGrab();
+      hatchGrabber.grabOff();
     }
 
     // Arm raise lever thing
@@ -302,7 +302,7 @@ public class Robot extends TimedRobot {
       armRaise.down();
     } else {
       // Set the solonoid to relax and not favor in or out
-      armRaise.relax();
+      armRaise.off();
     }
     armWheels.setMotorSpeed(manipulatorController.getY());
 

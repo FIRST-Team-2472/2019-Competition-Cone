@@ -32,7 +32,7 @@ public class ArmLiftAction extends TimerBase {
 
     @Override
     public void endAction() {
-        Robot.armRaise.relax();
+        Robot.armRaise.off();
     }
 
 }
