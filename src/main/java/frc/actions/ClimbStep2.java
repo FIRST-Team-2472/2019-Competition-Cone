@@ -12,38 +12,28 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class LowerClimbingPistions extends TimerBase {
+public class ClimbStep2 implements Actionable {
 
-    public enum Type {FRONT, REAR, ALL};
 
-    private Type chosen;
+    @Override
+    public void startAction() {
 
-    public LowerClimbingPistions(LowerClimbingPistions.Type area, double time) {
-        super(time);
-        chosen = area;
-    }
-
-    public LowerClimbingPistions(LowerClimbingPistions.Type area) {
-        this(area, 2);
     }
 
     @Override
     public void periodic() {
-        switch (chosen) {
-            case FRONT:
-                Robot.climb.retractFront();
-                break;
-            case REAR:
-                Robot.climb.retractRear();
-                break;
-            case ALL:
-                Robot.climb.retractFront();
-                Robot.climb.retractRear();
-        }
+        Robot.climb.creepForward();
     }
 
     @Override
     public void endAction() {
+        Robot.climb.retractFront();
+        Robot.climb.stopCreep();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Robot.distanceRear.getValue() > 2000;
     }
 
 }
