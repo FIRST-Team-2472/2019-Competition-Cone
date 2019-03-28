@@ -7,11 +7,14 @@
 
 package frc.robot;
 
+import java.util.function.*;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -76,6 +79,10 @@ public class Robot extends TimedRobot {
   private boolean weAreCLIMBING;
   private boolean climbInit;
 
+  // PWM outputs to arudino for colorful LEDs
+  private PWM leftPWM;
+  private PWM rightPWM;
+
 
 
   /**
@@ -107,6 +114,10 @@ public class Robot extends TimedRobot {
     // Distace sensors for climbing
     distanceFront = new AnalogInput(1);
     distanceRear = new AnalogInput(0);
+
+    // PWM outputs to arudino for colorful LEDs
+    leftPWM = new PWM(0);
+    rightPWM = new PWM(1);
 
     // Init cameras
     CameraServer.getInstance().startAutomaticCapture(0);
@@ -222,6 +233,8 @@ public class Robot extends TimedRobot {
         */
         System.out.println("climbing mode actvated");
       }
+      leftPWM.setRaw(255);
+      rightPWM.setRaw(255);
       //actionQueue.step();
       return;
     }
@@ -266,7 +279,13 @@ public class Robot extends TimedRobot {
     // XXX: review this logic because when driveInverted the drive is incorrect
     int LEFT = 0;
     int RIGHT = 1;
-    d.tankDrive(driveInverted ? -leftRight[RIGHT] : leftRight[LEFT], driveInverted ? -leftRight[LEFT] : leftRight[RIGHT]);
+    Function<double[], Double> leftAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[RIGHT] : driveTuple[LEFT];
+    Function<double[], Double> rightAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[LEFT] : driveTuple[RIGHT];
+
+    d.tankDrive(leftAdjust.apply(leftRight), rightAdjust.apply(leftRight));
+    sendSpeed(leftAdjust.apply(leftRight), rightAdjust.apply(leftRight));
+
+    // Send speed to arduino
     
     // Hatch grabber
     // A is push out hatch grabber
@@ -317,6 +336,8 @@ public class Robot extends TimedRobot {
      * | 1 0 1 0 |
      * +---------+
      *      
+     *  I Guess not
+     *  only 2 buttons
      * */
      
     // XXX: teleop climbing has not been tested
@@ -333,6 +354,23 @@ public class Robot extends TimedRobot {
       weAreCLIMBING = true;
     }
   }
+
+  void sendSpeed(double leftSpeed, double rightSpeed) {
+    if (leftSpeed < 0.1) {
+        leftPWM.setRaw(0);
+    } else {
+      int value = (int)(50 * leftSpeed);
+      leftPWM.setRaw(100 + value);
+    }
+    
+    if (rightSpeed < 0.1) {
+        rightPWM.setRaw(0);
+    } else {
+      int value = (int)(50 * rightSpeed);
+      rightPWM.setRaw(100 + value);
+    }
+    
+}
   
   @Override
   public void testInit() {
