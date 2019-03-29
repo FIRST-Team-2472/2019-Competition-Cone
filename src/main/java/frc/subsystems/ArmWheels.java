@@ -33,7 +33,7 @@ public class ArmWheels {
   public void setMotorSpeed(double speed)
   {
     r.set(ControlMode.PercentOutput,speed);
-    l.set(ControlMode.PercentOutput,-speed);
+    l.set(ControlMode.PercentOutput,speed);
   }
 
   public void stop() {

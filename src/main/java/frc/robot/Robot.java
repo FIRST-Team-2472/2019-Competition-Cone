@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.actions.ActionQueue;
 import frc.actions.ArmLiftAction;
 import frc.actions.ArmWheelsAction;
+import frc.actions.ClimbStep2;
+import frc.actions.ClimbStep3;
 import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
 import frc.actions.GrabberGripAction;
@@ -31,6 +33,7 @@ import frc.actions.JoinActions;
 import frc.actions.LowerClimbingPistions;
 import frc.actions.RaiseClimbingPistions;
 import frc.actions.WaitAction;
+import frc.actions.RaiseClimbingPistions.Type;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
 import frc.subsystems.Climb;
@@ -80,6 +83,8 @@ public class Robot extends TimedRobot {
   private boolean timerActive;
   private boolean weAreCLIMBING;
   private boolean climbInit;
+  private ActionQueue actionQueue;
+
 
   // PWM outputs to arudino for colorful LEDs
   private PWM leftPWM;
@@ -96,8 +101,8 @@ public class Robot extends TimedRobot {
     // Driver input
     leftStick = new Joystick(0);
     rightStick = new Joystick(1);
-    driverController = new XboxController(2);
-    manipulatorController = new XboxController(4);
+    //driverController = new XboxController(2);
+    manipulatorController = new XboxController(2);
     box = new Switchbox(3);
 
     // Init compressor
@@ -209,8 +214,8 @@ public class Robot extends TimedRobot {
     lightring.set(Value.kOn);
     // This init sectino can be called twice so I put this in
     if (!joysticksInited) {
-      LeftError = leftStick.getY();
-      RightError = rightStick.getY();
+      //LeftError = leftStick.getY();
+      //RightError = rightStick.getY();
       joysticksInited = true;
     }
     
@@ -221,23 +226,24 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // the weAreCLIMBING section is a alternate mode where driving stops and the robot climb
-    // XXX: teleop climbing has not been tested
     if (weAreCLIMBING) {
       if (!climbInit) {
-        /* 
+        
         actionQueue = new ActionQueue();
-        actionQueue.addAction(new LowerPistions(2));
-        actionQueue.addAction(new RaiseFrontPistions());
-        actionQueue.addAction(new RaiseRearPistions());
+        actionQueue.addAction(new RaiseClimbingPistions(Type.ALL, 3));
+        actionQueue.addAction(new ClimbStep2());
+        actionQueue.addAction(new WaitAction(2));
+        actionQueue.addAction(new ClimbStep3());
+        actionQueue.addAction(new WaitAction(2));
         actionQueue.addAction(new DriveAction(.5));
 
         climbInit = true;
-        */
+        
         System.out.println("climbing mode actvated");
       }
       leftPWM.setRaw(255);
       rightPWM.setRaw(255);
-      //actionQueue.step();
+      actionQueue.step();
       return;
     }
 
@@ -251,11 +257,11 @@ public class Robot extends TimedRobot {
 
     double[] leftRight;
 
-    if (box.getSwitch(0, 1)) {
+    //if (box.getSwitch(0, 1)) {
       leftRight = getJoystickControl(leftStick, rightStick);
-    } else {
-      leftRight = getXboxControl(driverController);
-    }
+    //} else {
+      //leftRight = getXboxControl(driverController);
+    //}
     SmartDashboard.putNumber("left", leftRight[0]);
     SmartDashboard.putNumber("right", leftRight[1]);
     
@@ -276,13 +282,12 @@ public class Robot extends TimedRobot {
     // [+) = robot
 
     // Top left switch 
-    driveInverted = box.getSwitch(0, 0);
+    driveInverted = box.getRawButton(1);
     // "advanced" logic to switch direction
-    // XXX: review this logic because when driveInverted the drive is incorrect
     int LEFT = 0;
     int RIGHT = 1;
-    Function<double[], Double> leftAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[RIGHT] : driveTuple[LEFT];
-    Function<double[], Double> rightAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[LEFT] : driveTuple[RIGHT];
+    Function<double[], Double> leftAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[LEFT] : driveTuple[RIGHT];
+    Function<double[], Double> rightAdjust = (double[] driveTuple) -> driveInverted ? -driveTuple[RIGHT] : driveTuple[LEFT];
 
     d.tankDrive(leftAdjust.apply(leftRight), rightAdjust.apply(leftRight));
     sendSpeed(leftAdjust.apply(leftRight), rightAdjust.apply(leftRight));
@@ -325,6 +330,7 @@ public class Robot extends TimedRobot {
       armRaise.off();
     }
     armWheels.setMotorSpeed(manipulatorController.getY());
+    climb.setCreep(-manipulatorController.getRawAxis(1));
 
     /*
      * Box is like this to trigger climbing
@@ -342,8 +348,9 @@ public class Robot extends TimedRobot {
      *  only 2 buttons
      * */
      
-    // XXX: teleop climbing has not been tested
-    if(box.getSwitch(1,0) && !box.getSwitch(1,1) && box.getSwitch(1,2) && !box.getSwitch(1,3)) {
+    // Old switchbox
+    //if(box.getSwitch(1,0) && !box.getSwitch(1,1) && box.getSwitch(1,2) && !box.getSwitch(1,3)) {
+    if (box.getRawButton(2)) {
       if (!timerActive) {
         timerActive = true;
         climbTimer = System.currentTimeMillis() + 1000;
