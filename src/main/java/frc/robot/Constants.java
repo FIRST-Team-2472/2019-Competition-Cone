@@ -12,8 +12,10 @@ package frc.robot;
  */
 public class Constants {
     // Motors
-    public static final int LEFT_MOTOR_ID = 13;
-    public static final int RIGHT_MOTOR_ID = 3;
+    public static final int FRONT_LEFT_MOTOR_ID = 13;
+    public static final int FRONT_RIGHT_MOTOR_ID = 0;
+    public static final int BACK_LEFT_MOTOR_ID = 1;
+    public static final int BACK_RIGHT_MOTOR_ID = 3;
 
     // Controller usb id
     public static final int DRIVE_CONTROLLER = 0;
@@ -30,7 +32,7 @@ public class Constants {
     public static final int BOX_INVERSE_BUTTON_COLLUMN = 0;
 
     // Arm
-    public static final int ARM_WHEELS_RIGHT = 1;
+    public static final int ARM_WHEELS_RIGHT = 2;
     public static final int ARM_WHEELS_LEFT = 5;
     public static final int ARM_RAISER_FORWARD_CHANNEL = 2;
     public static final int ARM_RAISER_REVERSE_CHANNEL = 3;

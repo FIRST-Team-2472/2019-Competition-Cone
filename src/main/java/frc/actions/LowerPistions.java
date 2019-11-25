@@ -20,8 +20,8 @@ public class LowerPistions extends TimerBase {
 
     @Override
     public void periodic() {
-        //Robot.climb.raiseFront();
-        //Robot.climb.raiseRear();
+        Robot.climb.raiseFront();
+        Robot.climb.raiseRear();
     }
 
     @Override

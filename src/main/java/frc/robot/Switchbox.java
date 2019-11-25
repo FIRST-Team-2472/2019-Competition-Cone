@@ -48,7 +48,7 @@ public class Switchbox extends GenericHID {
         if (collumn < 0 || collumn >= switchesWidth) {
             throw new IndexOutOfBoundsException("Collumn is not on this switchbox");
         }
-        int switchStart = 5;
+        int switchStart = 0;
         int rowOffset = 4 * row;
         int collumOffset = collumn;
 

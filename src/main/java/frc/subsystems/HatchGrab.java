@@ -9,7 +9,6 @@ package frc.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import frc.robot.Constants;
 
 /**
  * Add your docs here.

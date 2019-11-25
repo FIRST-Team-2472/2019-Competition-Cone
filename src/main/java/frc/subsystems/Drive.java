@@ -19,21 +19,33 @@ import frc.robot.Constants;
 public class Drive {
     private TalonSRX leftFoot;
     private TalonSRX rightFoot;
+    private TalonSRX middleleftFoot;
+    private TalonSRX middlerightFoot;
 
-    public Drive(int leftFootID, int rightFootID) {
+    public Drive(int leftFootID, int rightFootID, int middleleftFootID, int middlerightFootID) {
         leftFoot = new TalonSRX(leftFootID);
         rightFoot = new TalonSRX(rightFootID);
+        middleleftFoot = new TalonSRX(middleleftFootID);
+        middlerightFoot = new TalonSRX(middlerightFootID);
+        double ramp = .5;
+        leftFoot.configOpenloopRamp(ramp);
+        rightFoot.configOpenloopRamp(ramp);
+        middleleftFoot.configOpenloopRamp(ramp);
+        middlerightFoot.configOpenloopRamp(ramp);
         rightFoot.setInverted(true);
+        middlerightFoot.setInverted(true);
     }
 
     public Drive() {
-        this(Constants.LEFT_MOTOR_ID, Constants.RIGHT_MOTOR_ID);
+        this(Constants.FRONT_LEFT_MOTOR_ID, Constants.FRONT_RIGHT_MOTOR_ID, Constants.BACK_LEFT_MOTOR_ID, Constants.BACK_RIGHT_MOTOR_ID);
     }
 
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
         runBackLeft(leftSpeed);
         runBackRight(rightSpeed);
+        runMiddleLeft(leftSpeed);
+        runMiddleRight(rightSpeed);
     }
 
     public void tankDrive(double[] leftRightArray) {
@@ -44,8 +56,7 @@ public class Drive {
     }
 
     public void runDriveMotors(double speed) {
-        runBackLeft(speed);
-        runBackRight(speed);
+        tankDrive(speed, speed);
     }
 
     public void stopMotors() {
@@ -59,4 +70,15 @@ public class Drive {
     public void runBackRight(double speed) {
         rightFoot.set(ControlMode.PercentOutput, speed);
     }
+    public void runMiddleLeft(double speed) {
+        middleleftFoot.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void runMiddleRight(double speed) {
+        middlerightFoot.set(ControlMode.PercentOutput, speed);
+    }
+
+    //double test() {
+        //return 0.5;
+    //}
 }

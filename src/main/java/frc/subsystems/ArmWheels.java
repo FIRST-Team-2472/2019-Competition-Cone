@@ -16,6 +16,7 @@ public class ArmWheels {
   public ArmWheels(int left, int right) {
     r = new TalonSRX(left);
     l = new TalonSRX(right);
+    l.setInverted(true);
   }
 
   public ArmWheels() {

@@ -23,9 +23,13 @@ import frc.subsystems.Drive;
 import frc.actions.ActionQueue;
 import frc.actions.ArmLiftAction;
 import frc.actions.ArmWheelsAction;
+import frc.actions.DriveAction;
 import frc.actions.GrabberExtendAction;
 import frc.actions.GrabberGripAction;
 import frc.actions.JoinActions;
+import frc.actions.LowerPistions;
+import frc.actions.RaiseFrontPistions;
+import frc.actions.RaiseRearPistions;
 import frc.actions.WaitAction;
 import frc.subsystems.ArmRaise;
 import frc.subsystems.ArmWheels;
@@ -67,6 +71,7 @@ public class Robot extends TimedRobot {
 
   // Climbing actions and objects
   private ActionQueue testActions;
+  private ActionQueue actionQueue;
   public static AnalogInput distanceFront;
   public static AnalogInput distanceRear;
   
@@ -74,10 +79,7 @@ public class Robot extends TimedRobot {
   private long climbTimer;
   private boolean timerActive;
   private boolean weAreCLIMBING;
-  private boolean climbInit;
-
-
-
+  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -115,14 +117,15 @@ public class Robot extends TimedRobot {
 
   /**
    * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
+   * between different autonomous modes using the dashboard. The sendable chooser
+   * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+   * remove all of the chooser code and uncomment the getString line to get the
+   * auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
+   * <p>
+   * You can add additional auto modes by adding additional comparisons to the
+   * switch structure below with additional strings. If using the SendableChooser
+   * make sure to add them to the chooser code above as well.
    */
   @Override
   public void autonomousInit() {
@@ -151,45 +154,48 @@ public class Robot extends TimedRobot {
     b -= RightError;
 
     // Deadzones. If the value is small ignore it.
-    if(Math.abs(a) < 0.2) a = 0;
-    if(Math.abs(b) < 0.2) b = 0;
+    if (Math.abs(a) < 0.2)
+      a = 0;
+    if (Math.abs(b) < 0.2)
+      b = 0;
 
-    
     double power = 2;
     // This is quaring the values from the joysticks
     // thus making finer small adjusments
     a = a < 0 ? -Math.pow(a, power) : Math.pow(a, power);
     b = b < 0 ? -Math.pow(b, power) : Math.pow(b, power);
 
-    return new double[]{a, b};
+    return new double[] { a, b };
   }
 
   private double[] getXboxControl(XboxController driverController) {
-    double rightSide;
-    double leftSide;
-    double turn = driverController.getX(Hand.kLeft);
-    boolean spin = driverController.getXButton();
-    double speed = driverController.getTriggerAxis(Hand.kLeft);
-    double slowdown = driverController.getTriggerAxis(Hand.kRight);
-    boolean turningRight = turn > 0;
+    double rightSide = -driverController.getRawAxis(3);
+    double leftSide = -driverController.getRawAxis(1);
+    // double turn = driverController.getX(Hand.kLeft);
+    // boolean spin = driverController.getXButton();
+    // double speed = driverController.getTriggerAxis(Hand.kLeft);
+    // double slowdown = driverController.getTriggerAxis(Hand.kRight);
+    // boolean turningRight = turn > 0;
 
-    if(spin){
-				rightSide = turn;
-				leftSide = -turn;
-		} else {
-			double baseSpeed = speed - slowdown;
+    // if(spin){
+    // rightSide = turn;
+    // leftSide = -turn;
+    // } else {
+    // double baseSpeed = speed - slowdown;
 
-			if(turningRight) {
-        leftSide = baseSpeed * (1 - Math.abs(turn));
-        rightSide = baseSpeed;
-			} else {
-				rightSide = baseSpeed * (1 - Math.abs(turn));
-				leftSide=baseSpeed;
-			}
-		}
-    return new double[]{leftSide, rightSide};
+    // if(turningRight) {
+    // leftSide = baseSpeed * (1 - Math.abs(turn));
+    // rightSide = baseSpeed;
+    // } else {
+    // rightSide = baseSpeed * (1 - Math.abs(turn));
+    // leftSide=baseSpeed;
+    // }
+    // }
+    return new double[] { Math.min(.5,leftSide), Math.min(.5,rightSide) };
   }
+
   boolean joysticksInited = false;
+
   @Override
   public void teleopInit() {
     // Because we started make sure the lightring is on
@@ -200,31 +206,32 @@ public class Robot extends TimedRobot {
       RightError = rightStick.getY();
       joysticksInited = true;
     }
-    
+
   }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
-    // the weAreCLIMBING section is a alternate mode where driving stops and the robot climb
+    // the weAreCLIMBING section is a alternate mode where driving stops and the
+    // robot climb
     // XXX: teleop climbing has not been tested
     if (weAreCLIMBING) {
-      if (!climbInit) {
-        /* 
+      if (actionQueue == null) {
+
         actionQueue = new ActionQueue();
         actionQueue.addAction(new LowerPistions(2));
         actionQueue.addAction(new RaiseFrontPistions());
         actionQueue.addAction(new RaiseRearPistions());
         actionQueue.addAction(new DriveAction(.5));
 
-        climbInit = true;
-        */
         System.out.println("climbing mode actvated");
+      } else {
+        actionQueue.step();
+        return;
       }
-      //actionQueue.step();
-      return;
-    }
+    }  
 
     // Zero outs the joysticks
     if (leftStick.getRawButton(3)) {
@@ -235,12 +242,13 @@ public class Robot extends TimedRobot {
     }
 
     double[] leftRight;
-
-    if (box.getSwitch(0, 1)) {
+    // 4/23 just making it work
+    //if (box.getSwitch(0, 1)) {
       leftRight = getJoystickControl(leftStick, rightStick);
-    } else {
-      leftRight = getXboxControl(driverController);
-    }
+    //} else {
+      //leftRight = getXboxControl(driverController);
+    //}
+
     SmartDashboard.putNumber("left", leftRight[0]);
     SmartDashboard.putNumber("right", leftRight[1]);
     
@@ -261,9 +269,11 @@ public class Robot extends TimedRobot {
     // [+) = robot
 
     // Top left switch 
-    driveInverted = box.getSwitch(0, 0);
+    driveInverted = box.getSwitch(0, 1);
+    // LOL nope 4/23
+    //driveInverted = false;
     // "advanced" logic to switch direction
-    // XXX: review this logic because when driveInverted the drive is incorrect
+
     int LEFT = 0;
     int RIGHT = 1;
     d.tankDrive(driveInverted ? -leftRight[RIGHT] : leftRight[LEFT], driveInverted ? -leftRight[LEFT] : leftRight[RIGHT]);
@@ -303,7 +313,9 @@ public class Robot extends TimedRobot {
       // Set the solonoid to relax and not favor in or out
       armRaise.off();
     }
-    armWheels.setMotorSpeed(manipulatorController.getY());
+    armWheels.setMotorSpeed(manipulatorController.getY(Hand.kRight));
+    climb.setCreep(manipulatorController.getY(Hand.kLeft));
+
 
     /*
      * Box is like this to trigger climbing
@@ -320,7 +332,7 @@ public class Robot extends TimedRobot {
      * */
      
     // XXX: teleop climbing has not been tested
-    if(box.getSwitch(1,0) && !box.getSwitch(1,1) && box.getSwitch(1,2) && !box.getSwitch(1,3)) {
+    if(box.getRawButton(2)) {
       if (!timerActive) {
         timerActive = true;
         climbTimer = System.currentTimeMillis() + 1000;
